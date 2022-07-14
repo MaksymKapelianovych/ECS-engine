@@ -166,8 +166,8 @@ void InteractionWorld::removeAndUpdateEntities()
 			didRemove = false;
 			for(size_t j = 0; j < entitiesToRemove.size(); j++) {
 				if(entities[i].handle == entitiesToRemove[j]) {
-					entities.swap_remove(i);
-					entitiesToRemove.swap_remove(j);
+					utils::swap_remove(entities, i);
+					utils::swap_remove(entitiesToRemove, j);
 					didRemove = true;
 					break;
 				}
@@ -185,7 +185,7 @@ void InteractionWorld::removeAndUpdateEntities()
 				for(size_t k = 0; k < interactions.size(); k++) {
 					computeInteractions(entities[i], k);
 				}
-				entitiesToUpdate.swap_remove(j);
+				utils::swap_remove(entitiesToUpdate, j);
 			}
 		}
 	}

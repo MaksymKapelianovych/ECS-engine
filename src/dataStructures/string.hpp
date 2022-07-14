@@ -5,7 +5,7 @@
 #include "core/common.hpp"
 #include "array.hpp"
 
-#define String std::string
+using String = std::string;
 
 struct StringFuncs
 {
