@@ -4,16 +4,19 @@
 
 ECS::~ECS()
 {
-	for(Map<uint32_t, Array<uint8_t>>::iterator it = components.begin(); it != components.end(); ++it) {
-		size_t typeSize = BaseECSComponent::getTypeSize(it->first);
-		ECSComponentFreeFunction freefn = BaseECSComponent::getTypeFreeFunction(it->first);
-		for(uint32_t i = 0; i < it->second.size(); i += typeSize) {
-			freefn((BaseECSComponent*)&it->second[i]);
+	for (auto& component : components)
+	{
+		size_t                   typeSize = BaseECSComponent::getTypeSize(component.first);
+		ECSComponentFreeFunction freefn = BaseECSComponent::getTypeFreeFunction(component.first);
+		for(uint32_t i = 0; i < component.second.size(); i += typeSize) {
+			freefn((BaseECSComponent*)&component.second[i]);
 		}
 	}
+	
 
-	for(uint32_t i = 0; i < entities.size(); i++) {
-		delete entities[i];
+	for (auto& entity : entities)
+	{
+		delete entity;
 	}
 }
 
@@ -34,15 +37,17 @@ EntityHandle ECS::makeEntity(BaseECSComponent* const * entityComponents, uint32_
 	newEntity->first = entities.size();
 	entities.push_back(newEntity);
 
-	for(uint32_t i = 0; i < listeners.size(); i++) {
+	for (auto& listener : listeners)
+	{
 		bool isValid = true;
-		if(listeners[i]->shouldNotifyOnAllEntityOperations()) {
-			listeners[i]->onMakeEntity(handle);
+		if(listener->shouldNotifyOnAllEntityOperations()) {
+			listener->onMakeEntity(handle);
 		} else {
-			for(uint32_t j = 0; j < listeners[i]->getComponentIDs().size(); j++) {
+			for (unsigned int id : listener->getComponentIDs())
+			{
 				bool hasComponent = false;
 				for(uint32_t k = 0; k < numComponents; k++) {
-					if(listeners[i]->getComponentIDs()[j] == componentIDs[k]) {
+					if(id == componentIDs[k]) {
 						hasComponent = true;
 						break;
 					}
@@ -53,7 +58,7 @@ EntityHandle ECS::makeEntity(BaseECSComponent* const * entityComponents, uint32_
 				}
 			}
 			if(isValid) {
-				listeners[i]->onMakeEntity(handle);
+				listener->onMakeEntity(handle);
 			}
 		}
 	}
@@ -65,16 +70,19 @@ void ECS::removeEntity(EntityHandle handle)
 {
 	Array<std::pair<uint32_t, uint32_t> >& entity = handleToEntity(handle);
 
-	for(uint32_t i = 0; i < listeners.size(); i++) {
-		const Array<uint32_t>& componentIDs = listeners[i]->getComponentIDs();
-		bool isValid = true;
-		if(listeners[i]->shouldNotifyOnAllEntityOperations()) {
-			listeners[i]->onRemoveEntity(handle);
+	for (auto& listener : listeners)
+	{
+		const Array<uint32_t>& componentIDs = listener->getComponentIDs();
+		bool                   isValid = true;
+		if(listener->shouldNotifyOnAllEntityOperations()) {
+			listener->onRemoveEntity(handle);
 		} else {
-			for(uint32_t j = 0; j < componentIDs.size(); j++) {
+			for (unsigned int componentID : componentIDs)
+			{
 				bool hasComponent = false;
-				for(uint32_t k = 0; k < entity.size(); k++) {
-					if(componentIDs[j] == entity[k].first) {
+				for (auto& component : entity)
+				{
+					if(componentID == component.first) {
 						hasComponent = true;
 						break;
 					}
@@ -85,13 +93,14 @@ void ECS::removeEntity(EntityHandle handle)
 				}
 			}
 			if(isValid) {
-				listeners[i]->onRemoveEntity(handle);
+				listener->onRemoveEntity(handle);
 			}
 		}
 	}
 	
-	for(uint32_t i = 0; i < entity.size(); i++) {
-		deleteComponent(entity[i].first, entity[i].second);
+	for (auto& component : entity)
+	{
+		deleteComponent(component.first, component.second);
 	}
 
 	uint32_t destIndex = handleToEntityIndex(handle);
@@ -129,9 +138,10 @@ void ECS::deleteComponent(uint32_t componentID, uint32_t index)
 	Memory::memcpy(destComponent, srcComponent, typeSize);
 
 	Array<std::pair<uint32_t, uint32_t> >& srcComponents = handleToEntity(srcComponent->entity);
-	for(uint32_t i = 0; i < srcComponents.size(); i++) {
-		if(componentID == srcComponents[i].first && srcIndex == srcComponents[i].second) {
-			srcComponents[i].second = index;
+	for (auto& srcComponent : srcComponents)
+	{
+		if(componentID == srcComponent.first && srcIndex == srcComponent.second) {
+			srcComponent.second = index;
 			break;
 		}
 	}
@@ -142,24 +152,34 @@ void ECS::deleteComponent(uint32_t componentID, uint32_t index)
 bool ECS::removeComponentInternal(EntityHandle handle, uint32_t componentID)
 {
 	Array<std::pair<uint32_t, uint32_t> >& entityComponents = handleToEntity(handle);
-	for(uint32_t i = 0; i < entityComponents.size(); i++) {
-		if(componentID == entityComponents[i].first) {
-			deleteComponent(entityComponents[i].first, entityComponents[i].second);
-			uint32_t srcIndex = entityComponents.size()-1;
-			uint32_t destIndex = i;
-			entityComponents[destIndex] = entityComponents[srcIndex];
+	for(auto& component : entityComponents) {
+		if(componentID == component.first) {
+			deleteComponent(component.first, component.second);
+			component = std::move(entityComponents.back());
 			entityComponents.pop_back();
 			return true;
 		}
 	}
+	// Previous code
+	// for(uint32_t i = 0; i < entityComponents.size(); i++) {
+	// 	if(componentID == entityComponents[i].first) {
+	// 		deleteComponent(entityComponents[i].first, entityComponents[i].second);
+	// 		uint32_t srcIndex = entityComponents.size()-1;
+	// 		uint32_t destIndex = i;
+	// 		entityComponents[destIndex] = entityComponents[srcIndex];
+	// 		entityComponents.pop_back();
+	// 		return true;
+	// 	}
+	// }
 	return false;
 }
 
 BaseECSComponent* ECS::getComponentInternal(Array<std::pair<uint32_t, uint32_t> >& entityComponents, Array<uint8_t>& array, uint32_t componentID)
 {
-	for(uint32_t i = 0; i < entityComponents.size(); i++) {
-		if(componentID == entityComponents[i].first) {
-			return (BaseECSComponent*)&array[entityComponents[i].second];
+	for (auto& entityComponent : entityComponents)
+	{
+		if(componentID == entityComponent.first) {
+			return (BaseECSComponent*)&array[entityComponent.second];
 		}
 	}
 	return nullptr;

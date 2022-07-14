@@ -33,13 +33,13 @@ public:
 	{
 		MovementControlComponent* movementControl = (MovementControlComponent*)components[0];
 		MotionComponent* motionComponent = (MotionComponent*)components[1];
-
-		for(uint32_t i = 0; i < movementControl->movementControls.size(); i++) {
-			Vector3f movement = movementControl->movementControls[i].movement;
-			float inputAmt = movementControl->movementControls[i].inputControl->getAmt();
-			float inputDelta = inputAmt - movementControl->movementControls[i].lastInputAmt;
+		for (auto& control : movementControl->movementControls)
+		{
+			Vector3f movement = control.movement;
+			float    inputAmt = control.inputControl->getAmt();
+			float    inputDelta = inputAmt - control.lastInputAmt;
 			motionComponent->acceleration += movement * inputDelta;
-			movementControl->movementControls[i].lastInputAmt = inputAmt;
+			control.lastInputAmt = inputAmt;
 		}
 		// TODO: This is a cheap hack to get resistance for now! Replace with a proper system later
 		motionComponent->velocity = motionComponent->velocity * 0.95f;
