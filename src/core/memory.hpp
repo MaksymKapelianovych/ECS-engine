@@ -1,9 +1,8 @@
 #pragma once
 
 #include "common.hpp"
-#include "platform/platformMemory.hpp"
-#include <cstring>
-
+// #include "platform/platformMemory.hpp"
+#define GENERIC_MEMORY_SMALL_MEMSWAP_MAX 16
 /**
  * Various memory functions. 
  *
@@ -15,66 +14,136 @@
  */
 struct Memory
 {
-	static inline void* memmove(void* dest, const void* src, uintptr amt)
-	{
-		return PlatformMemory::memmove(dest, src, amt);
-	}
-
-	static inline int32 memcmp(const void* dest, const void* src, uintptr amt)
-	{
-		return PlatformMemory::memcmp(dest, src, amt);
-	}
-
-	template<typename T>
-	static inline void* memset(void* dest, T val, uintptr amt)
-	{
-		return PlatformMemory::memset(dest, val, amt);
-	}
-
-	static inline void* memzero(void* dest, uintptr amt)
-	{
-		return PlatformMemory::memset(dest, 0, amt);
-	}
-
-	static inline void* memcpy(void* dest, const void* src, uintptr amt)
-	{
-		return PlatformMemory::memcpy(dest, src, amt);
-	}
-
-	static inline void memswap(void* a, void* b, uintptr size)
-	{
-		return PlatformMemory::memswap(a, b, size);
-	}
-
+	// static inline void* memmove(void* dest, const void* src, uintptr_t amt)
+	// {
+	// 	return PlatformMemory::memmove(dest, src, amt);
+	// }
+	//
+	// static inline int32 memcmp(const void* dest, const void* src, uintptr_t amt)
+	// {
+	// 	return PlatformMemory::memcmp(dest, src, amt);
+	// }
+	//
+	// template<typename T>
+	// static inline void* memset(void* dest, T val, uintptr_t amt)
+	// {
+	// 	return PlatformMemory::memset(dest, val, amt);
+	// }
+	//
+	// static inline void* memzero(void* dest, uintptr_t amt)
+	// {
+	// 	return PlatformMemory::memset(dest, 0, amt);
+	// }
+	//
+	// static inline void* memcpy(void* dest, const void* src, uintptr_t amt)
+	// {
+	// 	return PlatformMemory::memcpy(dest, src, amt);
+	// }
+	//
+	// static inline void memswap(void* a, void* b, uintptr_t size)
+	// {
+	// 	return PlatformMemory::memswap(a, b, size);
+	// }
+	//
 	enum 
 	{
 		DEFAULT_ALIGNMENT = 16,
 		MIN_ALIGNMENT = 8
 	};
+	//
+	// template<typename T>
+	// static inline CONSTEXPR T align(const T ptr, uintptr_t alignment)
+	// {
+	// 	return PlatformMemory::align(ptr, alignment);
+	// }
+	//
+	// static inline void* malloc(uintptr_t amt, uint32_t alignment=DEFAULT_ALIGNMENT)
+	// {
+	// 	return PlatformMemory::malloc(amt, alignment);
+	// }
+	//
+	// static inline void* realloc(void* ptr, uintptr_t amt, uint32_t alignment=DEFAULT_ALIGNMENT)
+	// {
+	// 	return PlatformMemory::realloc(ptr, amt, alignment);
+	// }
+	//
+	// static inline void* free(void* ptr)
+	// {
+	// 	return PlatformMemory::free(ptr);
+	// }
+	//
+	// static inline uintptr_t getAllocSize(void* ptr)
+	// {
+	// 	return PlatformMemory::getAllocSize(ptr);
+	// }
+
+	static FORCEINLINE void* memmove(void* dest, const void* src, uintptr_t amt)
+	{
+		return ::memmove(dest, src, amt);
+	}
+
+	static FORCEINLINE int32_t memcmp(const void* dest, const void* src, uintptr_t amt)
+	{
+		return ::memcmp(dest, src, amt);
+	}
 
 	template<typename T>
-	static inline CONSTEXPR T align(const T ptr, uintptr alignment)
+	static FORCEINLINE void* memset(void* destIn, T val, uintptr_t amt)
 	{
-		return PlatformMemory::align(ptr, alignment);
+		T* dest = (T*)destIn;
+		uintptr_t amtT = amt/sizeof(T);
+		uintptr_t remainder = amt % sizeof(T);
+		for(uintptr_t i = 0; i < amtT; ++i, ++dest) {
+			memcpy(dest, &val, sizeof(T));
+		}
+		memcpy(dest, &val, remainder);
+		return destIn;
 	}
 
-	static inline void* malloc(uintptr amt, uint32 alignment=DEFAULT_ALIGNMENT)
+	static FORCEINLINE void* memzero(void* dest, uintptr_t amt)
 	{
-		return PlatformMemory::malloc(amt, alignment);
+		return ::memset(dest, 0, amt);
 	}
 
-	static inline void* realloc(void* ptr, uintptr amt, uint32 alignment=DEFAULT_ALIGNMENT)
+	static FORCEINLINE void* memcpy(void* dest, const void* src, uintptr_t amt)
 	{
-		return PlatformMemory::realloc(ptr, amt, alignment);
+		return ::memcpy(dest, src, amt);
 	}
 
-	static inline void* free(void* ptr)
+	static void memswap(void* a, void* b, uintptr_t size)
 	{
-		return PlatformMemory::free(ptr);
+		if(size <= GENERIC_MEMORY_SMALL_MEMSWAP_MAX) {
+			smallmemswap(a, b, size);
+		} else {
+			bigmemswap(a, b, size);
+		}
 	}
 
-	static inline uintptr getAllocSize(void* ptr)
+	template<typename T>
+	static FORCEINLINE CONSTEXPR T align(const T ptr, uintptr_t alignment)
 	{
-		return PlatformMemory::getAllocSize(ptr);
+		return (T)(((intptr_t)ptr + alignment - 1) & ~(alignment-1));
 	}
+
+	static void* malloc(uintptr_t amt, uint32_t alignment=DEFAULT_ALIGNMENT);
+	static void* realloc(void* ptr, uintptr_t amt, uint32_t alignment=DEFAULT_ALIGNMENT);
+	static void* free(void* ptr);
+	static uintptr_t getAllocSize(void* ptr);
+private:
+	static void bigmemswap(void* a, void* b, uintptr_t size);
+	static void smallmemswap(void* a, void* b, uintptr_t size)
+	{
+		assertCheck(size <= GENERIC_MEMORY_SMALL_MEMSWAP_MAX);
+		char temp_data[GENERIC_MEMORY_SMALL_MEMSWAP_MAX];
+		void* temp = (void*)&temp_data;
+		Memory::memcpy(temp, a, size);
+		Memory::memcpy(a, b, size);
+		Memory::memcpy(b, temp, size);
+	}
+};
+
+template<>
+FORCEINLINE void* Memory::memset(void* dest, uint8_t val, uintptr_t amt)
+{
+	return ::memset(dest, val, amt);
 };

@@ -6,9 +6,10 @@
 #include <SDL2/SDL.h>
 #include <GL/glew.h>
 
+
 #define MAKEFOURCC(a, b, c, d)                              \
-                ((uint32)(uint8)(a) | ((uint32)(uint8)(b) << 8) |       \
-				((uint32)(uint8)(c) << 16) | ((uint32)(uint8)(d) << 24 ))
+                ((uint32_t)(uint8_t)(a) | ((uint32_t)(uint8_t)(b) << 8) |       \
+				((uint32_t)(uint8_t)(c) << 16) | ((uint32_t)(uint8_t)(d) << 24 ))
 
 #define MAKEFOURCCDXT(a) MAKEFOURCC('D', 'X', 'T', a)
 
@@ -139,17 +140,17 @@ public:
 		bool shouldWriteDepth = true;
 		bool useStencilTest = false;
 		enum DrawFunc stencilFunc = DRAW_FUNC_ALWAYS;
-		uint32 stencilTestMask = 0;
-		uint32 stencilWriteMask = 0;
-		int32 stencilComparisonVal = 0;
+		uint32_t stencilTestMask = 0;
+		uint32_t stencilWriteMask = 0;
+		int32_t stencilComparisonVal = 0;
 		enum StencilOp stencilFail = STENCIL_KEEP;
 		enum StencilOp stencilPassButDepthFail = STENCIL_KEEP;
 		enum StencilOp stencilPass = STENCIL_KEEP;
 		bool useScissorTest = false;
-		uint32 scissorStartX = 0;
-		uint32 scissorStartY = 0;
-		uint32 scissorWidth = 0;
-		uint32 scissorHeight = 0;
+		uint32_t scissorStartX = 0;
+		uint32_t scissorStartY = 0;
+		uint32_t scissorWidth = 0;
+		uint32_t scissorHeight = 0;
 		enum BlendFunc sourceBlend = BLEND_FUNC_NONE;
 		enum BlendFunc destBlend = BLEND_FUNC_NONE;
 	};
@@ -158,90 +159,90 @@ public:
 	OpenGLRenderDevice(Window& window);
 	virtual ~OpenGLRenderDevice();
 
-	uint32 createRenderTarget(uint32 texture, int32 width, int32 height,
-			enum FramebufferAttachment attachment, uint32
-			attachmentNumber, uint32 mipLevel);
-	uint32 releaseRenderTarget(uint32 fbo);
+	uint32_t createRenderTarget(uint32_t texture, int32_t width, int32_t height,
+			enum FramebufferAttachment attachment, uint32_t
+			attachmentNumber, uint32_t mipLevel);
+	uint32_t releaseRenderTarget(uint32_t fbo);
 
-	uint32 createVertexArray(const float** vertexData, const uint32* vertexElementSizes,
-			uint32 numVertexComponents, uint32 numInstanceComponents,
-			uint32 numVertices, const uint32* indices,
-			uint32 numIndices, enum BufferUsage usage);
-	void updateVertexArrayBuffer(uint32 vao, uint32 bufferIndex,
-			const void* data, uintptr dataSize);
-	uint32 releaseVertexArray(uint32 vao);
+	uint32_t createVertexArray(const float** vertexData, const uint32_t* vertexElementSizes,
+			uint32_t numVertexComponents, uint32_t numInstanceComponents,
+			uint32_t numVertices, const uint32_t* indices,
+			uint32_t numIndices, enum BufferUsage usage);
+	void updateVertexArrayBuffer(uint32_t vao, uint32_t bufferIndex,
+			const void* data, uintptr_t dataSize);
+	uint32_t releaseVertexArray(uint32_t vao);
 
-	uint32 createSampler(enum SamplerFilter minFilter, enum SamplerFilter magFilter,
+	uint32_t createSampler(enum SamplerFilter minFilter, enum SamplerFilter magFilter,
 			enum SamplerWrapMode wrapU, enum SamplerWrapMode wrapV, float anisotropy);
-	uint32 releaseSampler(uint32 sampler);
+	uint32_t releaseSampler(uint32_t sampler);
 
-	uint32 createTexture2D(int32 width, int32 height, const void* data,
+	uint32_t createTexture2D(int32_t width, int32_t height, const void* data,
 			enum PixelFormat dataFormat, enum PixelFormat internalFormat,
 			bool generateMipmaps, bool compress);
-	uint32 createDDSTexture2D(uint32 width, uint32 height, const unsigned char* buffer,
-			uint32 fourCC, uint32 mipMapCount);
-	uint32 releaseTexture2D(uint32 texture2D);
+	uint32_t createDDSTexture2D(uint32_t width, uint32_t height, const unsigned char* buffer,
+			uint32_t fourCC, uint32_t mipMapCount);
+	uint32_t releaseTexture2D(uint32_t texture2D);
 
-	uint32 createUniformBuffer(const void* data, uintptr dataSize, enum BufferUsage usage);
-	void updateUniformBuffer(uint32 buffer, const void* data, uintptr dataSize);
-	uint32 releaseUniformBuffer(uint32 buffer);
+	uint32_t createUniformBuffer(const void* data, uintptr_t dataSize, enum BufferUsage usage);
+	void updateUniformBuffer(uint32_t buffer, const void* data, uintptr_t dataSize);
+	uint32_t releaseUniformBuffer(uint32_t buffer);
 
-	uint32 createShaderProgram(const String& shaderText);
-	void setShaderUniformBuffer(uint32 shader, const String& uniformBufferName,
-			uint32 buffer);
-	void setShaderSampler(uint32 shader, const String& samplerName,
-		uint32 texture, uint32 sampler, uint32 unit);
-	uint32 releaseShaderProgram(uint32 shader);
+	uint32_t createShaderProgram(const String& shaderText);
+	void setShaderUniformBuffer(uint32_t shader, const String& uniformBufferName,
+			uint32_t buffer);
+	void setShaderSampler(uint32_t shader, const String& samplerName,
+		uint32_t texture, uint32_t sampler, uint32_t unit);
+	uint32_t releaseShaderProgram(uint32_t shader);
 
-	void clear(uint32 fbo,
+	void clear(uint32_t fbo,
 			bool shouldClearColor, bool shouldClearDepth, bool shouldClearStencil,
-			const Color& color, uint32 stencil);
-	void draw(uint32 fbo, uint32 shader, uint32 vao, const DrawParams& drawParams,
-			uint32 numInstances, uint32 numElements);
+			const Color& color, uint32_t stencil);
+	void draw(uint32_t fbo, uint32_t shader, uint32_t vao, const DrawParams& drawParams,
+			uint32_t numInstances, uint32_t numElements);
 private:
 	struct VertexArray
 	{
-		uint32* buffers;
-		uintptr* bufferSizes;
-		uint32  numBuffers;
-		uint32  numElements;
-		uint32  instanceComponentsStartIndex;
+		uint32_t* buffers;
+		uintptr_t* bufferSizes;
+		uint32_t  numBuffers;
+		uint32_t  numElements;
+		uint32_t  instanceComponentsStartIndex;
 		enum BufferUsage usage;
 	};
 
 	struct ShaderProgram
 	{
-		Array<uint32>      shaders;
-		Map<String, int32> uniformMap;
-		Map<String, int32> samplerMap;
+		Array<uint32_t>      shaders;
+		Map<String, int32_t> uniformMap;
+		Map<String, int32_t> samplerMap;
 	};
 
 	struct FBOData
 	{
-		int32 width;
-		int32 height;
+		int32_t width;
+		int32_t height;
 	};
 
 	static bool isInitialized;
 	DeviceContext context;
 	String shaderVersion;
-	uint32 version;
-	Map<uint32, VertexArray> vaoMap;
-	Map<uint32, FBOData> fboMap;
-	Map<uint32, ShaderProgram> shaderProgramMap;
+	uint32_t version;
+	Map<uint32_t, VertexArray> vaoMap;
+	Map<uint32_t, FBOData> fboMap;
+	Map<uint32_t, ShaderProgram> shaderProgramMap;
 
-	uint32 boundFBO;
-	uint32 viewportFBO;
-	uint32 boundVAO;
-	uint32 boundShader;
+	uint32_t boundFBO;
+	uint32_t viewportFBO;
+	uint32_t boundVAO;
+	uint32_t boundShader;
 	enum FaceCulling currentFaceCulling;
 	enum DrawFunc currentDepthFunc;
 	enum BlendFunc currentSourceBlend;
 	enum BlendFunc currentDestBlend;
 	enum DrawFunc currentStencilFunc;
-	uint32 currentStencilTestMask;
-	uint32 currentStencilWriteMask;
-	int32 currentStencilComparisonVal;
+	uint32_t currentStencilTestMask;
+	uint32_t currentStencilWriteMask;
+	int32_t currentStencilComparisonVal;
 	enum StencilOp currentStencilFail;
 	enum StencilOp currentStencilPassButDepthFail;
 	enum StencilOp currentStencilPass;
@@ -250,21 +251,21 @@ private:
 	bool stencilTestEnabled;
 	bool scissorTestEnabled;
 	
-	void setFBO(uint32 fbo);
-	void setViewport(uint32 fbo);
-	void setVAO(uint32 vao);
-	void setShader(uint32 shader);
+	void setFBO(uint32_t fbo);
+	void setViewport(uint32_t fbo);
+	void setVAO(uint32_t vao);
+	void setShader(uint32_t shader);
 	void setFaceCulling(enum FaceCulling faceCulling);
 	void setDepthTest(bool shouldWrite, enum DrawFunc depthFunc);
 	void setBlending(enum BlendFunc sourceBlend, enum BlendFunc destBlend);
-	void setStencilTest(bool enable, enum DrawFunc stencilFunc, uint32 stencilTestMask,
-			uint32 stencilWriteMask, int32 stencilComparisonVal, enum StencilOp stencilFail,
+	void setStencilTest(bool enable, enum DrawFunc stencilFunc, uint32_t stencilTestMask,
+			uint32_t stencilWriteMask, int32_t stencilComparisonVal, enum StencilOp stencilFail,
 			enum StencilOp stencilPassButDepthFail, enum StencilOp stencilPass);
-	void setStencilWriteMask(uint32 mask);
-	void setScissorTest(bool enable, uint32 startX = 0, uint32 startY = 0,
-			uint32 width = 0, uint32 height = 0);
+	void setStencilWriteMask(uint32_t mask);
+	void setScissorTest(bool enable, uint32_t startX = 0, uint32_t startY = 0,
+			uint32_t width = 0, uint32_t height = 0);
 
-	uint32 getVersion();
+	uint32_t getVersion();
 	String getShaderVersion();
 	NULL_COPY_AND_ASSIGN(OpenGLRenderDevice)
 };

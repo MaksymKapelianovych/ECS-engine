@@ -1,13 +1,14 @@
 #include "sdlApplication.hpp"
 #include "core/common.hpp"
+#define SDL_MAIN_HANDLED
 #include <SDL2/SDL.h>
 
-uint32 SDLApplication::numInstances = 0;
+uint32_t SDLApplication::numInstances = 0;
 
 SDLApplication* SDLApplication::create()
 {
-	const uint32 flags = SDL_INIT_AUDIO | SDL_INIT_VIDEO | SDL_INIT_EVENTS;
-	uint32 initialized = SDL_WasInit(flags);
+	const uint32_t flags = SDL_INIT_AUDIO | SDL_INIT_VIDEO | SDL_INIT_EVENTS;
+	uint32_t initialized = SDL_WasInit(flags);
 	if(initialized != flags &&
 			SDL_Init(flags) != 0) {
 		DEBUG_LOG("SDLApplication", LOG_ERROR, "SDL_Init: %s", SDL_GetError());

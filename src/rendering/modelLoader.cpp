@@ -5,7 +5,7 @@
 
 
 bool ModelLoader::loadModels(const String& fileName,
-			Array<IndexedModel>& models, Array<uint32>& modelMaterialIndices,
+			Array<IndexedModel>& models, Array<uint32_t>& modelMaterialIndices,
 			Array<MaterialSpec>& materials)
 {
 	Assimp::Importer importer;
@@ -21,7 +21,7 @@ bool ModelLoader::loadModels(const String& fileName,
 		return false;
 	}
 	
-	for(uint32 j = 0; j < scene->mNumMeshes; j++) {
+	for(uint32_t j = 0; j < scene->mNumMeshes; j++) {
 		const aiMesh* model = scene->mMeshes[j];
 		modelMaterialIndices.push_back(model->mMaterialIndex);
 
@@ -34,7 +34,7 @@ bool ModelLoader::loadModels(const String& fileName,
 		newModel.allocateElement(16); // Transform matrix
 
 		const aiVector3D aiZeroVector(0.0f, 0.0f, 0.0f);
-		for(uint32 i = 0; i < model->mNumVertices; i++) {
+		for(uint32_t i = 0; i < model->mNumVertices; i++) {
 			const aiVector3D pos = model->mVertices[i];
 			const aiVector3D normal = model->mNormals[i];
 			const aiVector3D texCoord = model->HasTextureCoords(0)
@@ -46,7 +46,7 @@ bool ModelLoader::loadModels(const String& fileName,
 			newModel.addElement3f(2, normal.x, normal.y, normal.z);
 			newModel.addElement3f(3, tangent.x, tangent.y, tangent.z);
 		}
-		for(uint32 i = 0; i < model->mNumFaces; i++)
+		for(uint32_t i = 0; i < model->mNumFaces; i++)
 		{
 			const aiFace& face = model->mFaces[i];
 			assert(face.mNumIndices == 3);
@@ -57,7 +57,7 @@ bool ModelLoader::loadModels(const String& fileName,
 		models.push_back(newModel);
 	}
 
-	for(uint32 i = 0; i < scene->mNumMaterials; i++) {
+	for(uint32_t i = 0; i < scene->mNumMaterials; i++) {
 		const aiMaterial* material = scene->mMaterials[i];
 		MaterialSpec spec;
 		

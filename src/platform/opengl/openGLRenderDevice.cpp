@@ -6,7 +6,7 @@
 
 static bool addShader(GLuint shaderProgram, const String& text, GLenum type,
 		Array<GLuint>* shaders);
-static void addAllAttributes(GLuint program, const String& vertexShaderText, uint32 version);
+static void addAllAttributes(GLuint program, const String& vertexShaderText, uint32_t version);
 static bool checkShaderError(GLuint shader, int flag,
 		bool isProgram, const String& errorMessage);
 static void addShaderUniforms(GLuint shaderProgram, const String& shaderText,
@@ -19,8 +19,8 @@ bool OpenGLRenderDevice::globalInit()
 	if(isInitialized) {
 		return isInitialized;
 	}
-	int32 major = 3;
-	int32 minor = 2;
+	int32_t major = 3;
+	int32_t minor = 2;
 	
 	isInitialized = true;
 	if(SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK,
@@ -56,8 +56,8 @@ OpenGLRenderDevice::OpenGLRenderDevice(Window& window) :
 	currentSourceBlend(BLEND_FUNC_NONE),
 	currentDestBlend(BLEND_FUNC_NONE),
 	currentStencilFunc(DRAW_FUNC_ALWAYS),
-	currentStencilTestMask((uint32)0xFFFFFFFF),
-	currentStencilWriteMask((uint32)0xFFFFFFFF),
+	currentStencilTestMask((uint32_t)0xFFFFFFFF),
+	currentStencilWriteMask((uint32_t)0xFFFFFFFF),
 	currentStencilComparisonVal(0),
 	currentStencilFail(STENCIL_KEEP),
 	currentStencilPassButDepthFail(STENCIL_KEEP),
@@ -92,11 +92,11 @@ OpenGLRenderDevice::~OpenGLRenderDevice()
 	SDL_GL_DeleteContext(context);
 }
 
-void OpenGLRenderDevice::clear(uint32 fbo, bool shouldClearColor, bool shouldClearDepth,
-		bool shouldClearStencil, const Color& color, uint32 stencil)
+void OpenGLRenderDevice::clear(uint32_t fbo, bool shouldClearColor, bool shouldClearDepth,
+		bool shouldClearStencil, const Color& color, uint32_t stencil)
 {
 	setFBO(fbo);
-	uint32 flags = 0;
+	uint32_t flags = 0;
 	if(shouldClearColor) {
 		flags |= GL_COLOR_BUFFER_BIT;
 		glClearColor(color[0], color[1], color[2], color[3]);
@@ -132,9 +132,9 @@ void OpenGLRenderDevice::clear(uint32 fbo, bool shouldClearColor, bool shouldCle
  * + Otherwise, perform an instanced draw call for the number of desired
  * instances
  */
-void OpenGLRenderDevice::draw(uint32 fbo, uint32 shader, uint32 vao,
+void OpenGLRenderDevice::draw(uint32_t fbo, uint32_t shader, uint32_t vao,
 		const DrawParams& drawParams,
-		uint32 numInstances, uint32 numElements)
+		uint32_t numInstances, uint32_t numElements)
 {
 	if(numInstances == 0) {
 		return;
@@ -158,7 +158,7 @@ void OpenGLRenderDevice::draw(uint32 fbo, uint32 shader, uint32 vao,
 	}
 }
 
-void OpenGLRenderDevice::setFBO(uint32 fbo)
+void OpenGLRenderDevice::setFBO(uint32_t fbo)
 {
 	if(fbo == boundFBO) {
 		return;
@@ -172,7 +172,7 @@ void OpenGLRenderDevice::setFBO(uint32 fbo)
 	boundFBO = fbo;
 }
 
-void OpenGLRenderDevice::setViewport(uint32 fbo)
+void OpenGLRenderDevice::setViewport(uint32_t fbo)
 {
 	if(fbo == viewportFBO) {
 		return;
@@ -181,7 +181,7 @@ void OpenGLRenderDevice::setViewport(uint32 fbo)
 	viewportFBO = fbo;
 }
 
-void OpenGLRenderDevice::setShader(uint32 shader)
+void OpenGLRenderDevice::setShader(uint32_t shader)
 {
 	if(shader == boundShader) {
 		return;
@@ -190,7 +190,7 @@ void OpenGLRenderDevice::setShader(uint32 shader)
 	boundShader = shader;
 }
 
-void OpenGLRenderDevice::setVAO(uint32 vao)
+void OpenGLRenderDevice::setVAO(uint32_t vao)
 {
 	if(vao == boundVAO) {
 		return;
@@ -217,8 +217,8 @@ void OpenGLRenderDevice::setBlending(enum BlendFunc sourceBlend, enum BlendFunc 
 }
 
 
-void OpenGLRenderDevice::setScissorTest(bool enable, uint32 startX, uint32 startY,
-			uint32 width, uint32 height)
+void OpenGLRenderDevice::setScissorTest(bool enable, uint32_t startX, uint32_t startY,
+			uint32_t width, uint32_t height)
 {
 	if(!enable) {
 		if(!scissorTestEnabled) {
@@ -268,7 +268,7 @@ void OpenGLRenderDevice::setDepthTest(bool shouldWrite, enum DrawFunc depthFunc)
 }
 
 void OpenGLRenderDevice::setStencilTest(bool enable, enum DrawFunc stencilFunc,
-		uint32 stencilTestMask, uint32 stencilWriteMask, int32 stencilComparisonVal,
+		uint32_t stencilTestMask, uint32_t stencilWriteMask, int32_t stencilComparisonVal,
 		enum StencilOp stencilFail, enum StencilOp stencilPassButDepthFail,
 		enum StencilOp stencilPass)
 {
@@ -300,7 +300,7 @@ void OpenGLRenderDevice::setStencilTest(bool enable, enum DrawFunc stencilFunc,
 	setStencilWriteMask(stencilWriteMask);
 }
 
-void OpenGLRenderDevice::setStencilWriteMask(uint32 mask)
+void OpenGLRenderDevice::setStencilWriteMask(uint32_t mask)
 {
 	if(currentStencilWriteMask == mask) {
 		return;
@@ -310,12 +310,12 @@ void OpenGLRenderDevice::setStencilWriteMask(uint32 mask)
 }
 
 
-uint32 OpenGLRenderDevice::createRenderTarget(uint32 texture,
-		int32 width, int32 height,
+uint32_t OpenGLRenderDevice::createRenderTarget(uint32_t texture,
+		int32_t width, int32_t height,
 		enum FramebufferAttachment attachment,
-		uint32 attachmentNumber, uint32 mipLevel)
+		uint32_t attachmentNumber, uint32_t mipLevel)
 {
-	uint32 fbo;
+	uint32_t fbo;
 	glGenFramebuffers(1, &fbo);
 	setFBO(fbo);
 
@@ -331,13 +331,13 @@ uint32 OpenGLRenderDevice::createRenderTarget(uint32 texture,
 	return fbo;
 }
 
-uint32 OpenGLRenderDevice::releaseRenderTarget(uint32 fbo)
+uint32_t OpenGLRenderDevice::releaseRenderTarget(uint32_t fbo)
 {
 	if(fbo == 0) {
 		return 0;
 	}
 
-	Map<uint32, FBOData>::iterator it = fboMap.find(fbo);
+	Map<uint32_t, FBOData>::iterator it = fboMap.find(fbo);
 	if(it == fboMap.end()) {
 		return 0;
 	}
@@ -347,22 +347,22 @@ uint32 OpenGLRenderDevice::releaseRenderTarget(uint32 fbo)
 	return 0;
 }
 
-uint32 OpenGLRenderDevice::createVertexArray(const float** vertexData,
-		const uint32* vertexElementSizes, uint32 numVertexComponents,
-		uint32 numInstanceComponents, uint32 numVertices, const uint32* indices,
-		uint32 numIndices, enum BufferUsage usage)
+uint32_t OpenGLRenderDevice::createVertexArray(const float** vertexData,
+		const uint32_t* vertexElementSizes, uint32_t numVertexComponents,
+		uint32_t numInstanceComponents, uint32_t numVertices, const uint32_t* indices,
+		uint32_t numIndices, enum BufferUsage usage)
 {
 	unsigned int numBuffers = numVertexComponents + numInstanceComponents + 1;
 
 	GLuint VAO;
 	GLuint* buffers = new GLuint[numBuffers];
-	uintptr* bufferSizes = new uintptr[numBuffers];
+	uintptr_t* bufferSizes = new uintptr_t[numBuffers];
 
 	glGenVertexArrays(1, &VAO);
 	setVAO(VAO);
 
 	glGenBuffers(numBuffers, buffers);
-	for(uint32 i = 0, attribute = 0; i < numBuffers-1; i++) {
+	for(uint32_t i = 0, attribute = 0; i < numBuffers-1; i++) {
 		enum BufferUsage attribUsage = usage;
 		bool inInstancedMode = false;
 		if(i >= numVertexComponents) {
@@ -370,9 +370,9 @@ uint32 OpenGLRenderDevice::createVertexArray(const float** vertexData,
 			inInstancedMode = true;
 		}
 
-		uint32 elementSize = vertexElementSizes[i];
+		uint32_t elementSize = vertexElementSizes[i];
 		const void* bufferData = inInstancedMode ? nullptr : vertexData[i];
-		uintptr dataSize = inInstancedMode
+		uintptr_t dataSize = inInstancedMode
 			? elementSize * sizeof(float)
 			: elementSize * sizeof(float) * numVertices;
 		
@@ -382,9 +382,9 @@ uint32 OpenGLRenderDevice::createVertexArray(const float** vertexData,
 
 		// Because OpenGL doesn't support attributes with more than 4
 		// elements, each set of 4 elements gets its own attribute.
-		uint32 elementSizeDiv = elementSize/4;
-		uint32 elementSizeRem = elementSize%4;
-		for(uint32 j = 0; j < elementSizeDiv; j++) {
+		uint32_t elementSizeDiv = elementSize/4;
+		uint32_t elementSizeRem = elementSize%4;
+		for(uint32_t j = 0; j < elementSizeDiv; j++) {
 			glEnableVertexAttribArray(attribute);
 			glVertexAttribPointer(attribute, 4, GL_FLOAT, GL_FALSE,
 					elementSize * sizeof(GLfloat),
@@ -406,7 +406,7 @@ uint32 OpenGLRenderDevice::createVertexArray(const float** vertexData,
 		}
 	}
 
-	uintptr indicesSize = numIndices * sizeof(uint32);
+	uintptr_t indicesSize = numIndices * sizeof(uint32_t);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffers[numBuffers-1]);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, indicesSize,
 			indices, usage);
@@ -423,14 +423,14 @@ uint32 OpenGLRenderDevice::createVertexArray(const float** vertexData,
 	return VAO;
 }
 
-void OpenGLRenderDevice::updateVertexArrayBuffer(uint32 vao, uint32 bufferIndex,
-			const void* data, uintptr dataSize)
+void OpenGLRenderDevice::updateVertexArrayBuffer(uint32_t vao, uint32_t bufferIndex,
+			const void* data, uintptr_t dataSize)
 {
 	if(vao == 0) {
 		return;
 	}
 
-	Map<uint32, VertexArray>::iterator it = vaoMap.find(vao);
+	Map<uint32_t, VertexArray>::iterator it = vaoMap.find(vao);
 	if(it == vaoMap.end()) {
 		return;
 	}
@@ -452,12 +452,12 @@ void OpenGLRenderDevice::updateVertexArrayBuffer(uint32 vao, uint32 bufferIndex,
 	}	
 }
 
-uint32 OpenGLRenderDevice::releaseVertexArray(uint32 vao)
+uint32_t OpenGLRenderDevice::releaseVertexArray(uint32_t vao)
 {
 	if(vao == 0) {
 		return 0;
 	}
-	Map<uint32, VertexArray>::iterator it = vaoMap.find(vao);
+	Map<uint32_t, VertexArray>::iterator it = vaoMap.find(vao);
 	if(it == vaoMap.end()) {
 		return 0;
 	}
@@ -471,10 +471,10 @@ uint32 OpenGLRenderDevice::releaseVertexArray(uint32 vao)
 	return 0;
 }
 
-uint32 OpenGLRenderDevice::createSampler(enum SamplerFilter minFilter, enum SamplerFilter magFilter,
+uint32_t OpenGLRenderDevice::createSampler(enum SamplerFilter minFilter, enum SamplerFilter magFilter,
 			enum SamplerWrapMode wrapU, enum SamplerWrapMode wrapV, float anisotropy)
 {
-	uint32 result = 0;
+	uint32_t result = 0;
 	glGenSamplers(1, &result);
 	glSamplerParameteri(result, GL_TEXTURE_WRAP_S, wrapU);
 	glSamplerParameteri(result, GL_TEXTURE_WRAP_T, wrapV);
@@ -486,7 +486,7 @@ uint32 OpenGLRenderDevice::createSampler(enum SamplerFilter minFilter, enum Samp
 	return result;
 }
 
-uint32 OpenGLRenderDevice::releaseSampler(uint32 sampler)
+uint32_t OpenGLRenderDevice::releaseSampler(uint32_t sampler)
 {
 	if(sampler == 0) {
 		return 0;
@@ -542,7 +542,7 @@ static GLint getOpenGLInternalFormat(enum OpenGLRenderDevice::PixelFormat format
 }
 
 
-uint32 OpenGLRenderDevice::createTexture2D(int32 width, int32 height, const void* data,
+uint32_t OpenGLRenderDevice::createTexture2D(int32_t width, int32_t height, const void* data,
 			enum PixelFormat dataFormat, enum PixelFormat internalFormatIn,
 			bool generateMipmaps, bool compress)
 {
@@ -570,7 +570,7 @@ uint32 OpenGLRenderDevice::createTexture2D(int32 width, int32 height, const void
 	return textureHandle;
 }
 
-uint32 OpenGLRenderDevice::createDDSTexture2D(uint32 width, uint32 height, const unsigned char* buffer, uint32 fourCC, uint32 mipMapCount)
+uint32_t OpenGLRenderDevice::createDDSTexture2D(uint32_t width, uint32_t height, const unsigned char* buffer, uint32_t fourCC, uint32_t mipMapCount)
 {
 	GLint format;
 	switch(fourCC)
@@ -614,7 +614,7 @@ uint32 OpenGLRenderDevice::createDDSTexture2D(uint32 width, uint32 height, const
 	return textureID;
 }
 
-uint32 OpenGLRenderDevice::releaseTexture2D(uint32 texture2D)
+uint32_t OpenGLRenderDevice::releaseTexture2D(uint32_t texture2D)
 {
 	if(texture2D == 0) {
 		return 0;
@@ -623,17 +623,17 @@ uint32 OpenGLRenderDevice::releaseTexture2D(uint32 texture2D)
 	return 0;
 }
 
-uint32 OpenGLRenderDevice::createUniformBuffer(const void* data, uintptr dataSize,
+uint32_t OpenGLRenderDevice::createUniformBuffer(const void* data, uintptr_t dataSize,
 		enum BufferUsage usage)
 {
-	uint32 ubo;
+	uint32_t ubo;
 	glGenBuffers(1, &ubo);
 	glBindBuffer(GL_UNIFORM_BUFFER, ubo);
 	glBufferData(GL_UNIFORM_BUFFER, dataSize, data, usage);
 	return ubo;
 }
 
-void OpenGLRenderDevice::updateUniformBuffer(uint32 buffer, const void* data, uintptr dataSize)
+void OpenGLRenderDevice::updateUniformBuffer(uint32_t buffer, const void* data, uintptr_t dataSize)
 {
 	glBindBuffer(GL_UNIFORM_BUFFER, buffer);
 	void* dest = glMapBuffer(GL_UNIFORM_BUFFER, GL_WRITE_ONLY);
@@ -641,7 +641,7 @@ void OpenGLRenderDevice::updateUniformBuffer(uint32 buffer, const void* data, ui
 	glUnmapBuffer(GL_UNIFORM_BUFFER);
 }
 
-uint32 OpenGLRenderDevice::releaseUniformBuffer(uint32 buffer)
+uint32_t OpenGLRenderDevice::releaseUniformBuffer(uint32_t buffer)
 {
 	if(buffer == 0) {
 		return 0;
@@ -650,14 +650,14 @@ uint32 OpenGLRenderDevice::releaseUniformBuffer(uint32 buffer)
 	return 0;
 }
 
-uint32 OpenGLRenderDevice::createShaderProgram(const String& shaderText)
+uint32_t OpenGLRenderDevice::createShaderProgram(const String& shaderText)
 {
 	GLuint shaderProgram = glCreateProgram();
 
 	if(shaderProgram == 0) 
 	{
 		DEBUG_LOG(LOG_TYPE_RENDERER, LOG_ERROR, "Error creating shader program\n");
-        return (uint32)-1;
+        return (uint32_t)-1;
     }
 
 	String version = getShaderVersion();
@@ -669,23 +669,23 @@ uint32 OpenGLRenderDevice::createShaderProgram(const String& shaderText)
 	ShaderProgram programData;
 	if(!addShader(shaderProgram, vertexShaderText, GL_VERTEX_SHADER,
 				&programData.shaders)) {
-		return (uint32)-1; 
+		return (uint32_t)-1; 
 	}
 	if(!addShader(shaderProgram, fragmentShaderText, GL_FRAGMENT_SHADER,
 				&programData.shaders)) {
-		return (uint32)-1;
+		return (uint32_t)-1;
 	}
 	
 	glLinkProgram(shaderProgram);
 	if(checkShaderError(shaderProgram, GL_LINK_STATUS,
 				true, "Error linking shader program")) {
-		return (uint32)-1;
+		return (uint32_t)-1;
 	}
 
     glValidateProgram(shaderProgram);
 	if(checkShaderError(shaderProgram, GL_VALIDATE_STATUS,
 				true, "Invalid shader program")) {
-		return (uint32)-1;
+		return (uint32_t)-1;
 	}
 
 	addAllAttributes(shaderProgram, vertexShaderText, getVersion());
@@ -696,8 +696,8 @@ uint32 OpenGLRenderDevice::createShaderProgram(const String& shaderText)
 	return shaderProgram;
 }
 
-void OpenGLRenderDevice::setShaderUniformBuffer(uint32 shader, const String& uniformBufferName,
-			uint32 buffer)
+void OpenGLRenderDevice::setShaderUniformBuffer(uint32_t shader, const String& uniformBufferName,
+			uint32_t buffer)
 {
 	setShader(shader);
 	glBindBufferBase(GL_UNIFORM_BUFFER, 
@@ -705,8 +705,8 @@ void OpenGLRenderDevice::setShaderUniformBuffer(uint32 shader, const String& uni
 			buffer);
 }
 
-void OpenGLRenderDevice::setShaderSampler(uint32 shader, const String& samplerName,
-		uint32 texture, uint32 sampler, uint32 unit)
+void OpenGLRenderDevice::setShaderSampler(uint32_t shader, const String& samplerName,
+		uint32_t texture, uint32_t sampler, uint32_t unit)
 {
 	setShader(shader);
 	glActiveTexture(GL_TEXTURE0 + unit);
@@ -716,18 +716,18 @@ void OpenGLRenderDevice::setShaderSampler(uint32 shader, const String& samplerNa
 }
 
 
-uint32 OpenGLRenderDevice::releaseShaderProgram(uint32 shader)
+uint32_t OpenGLRenderDevice::releaseShaderProgram(uint32_t shader)
 {
 	if(shader == 0) {
 		return 0;
 	}
-	Map<uint32, ShaderProgram>::iterator programIt = shaderProgramMap.find(shader);
+	Map<uint32_t, ShaderProgram>::iterator programIt = shaderProgramMap.find(shader);
 	if(programIt == shaderProgramMap.end()) {
 		return 0;
 	}
 	const struct ShaderProgram* shaderProgram = &programIt->second; 
 
-	for(Array<uint32>::const_iterator it = shaderProgram->shaders.begin();
+	for(Array<uint32_t>::const_iterator it = shaderProgram->shaders.begin();
 			it != shaderProgram->shaders.end(); ++it) 
 	{
 		glDetachShader(shader, *it);
@@ -737,19 +737,19 @@ uint32 OpenGLRenderDevice::releaseShaderProgram(uint32 shader)
 	shaderProgramMap.erase(programIt);
 	return 0;
 }
-uint32 OpenGLRenderDevice::getVersion()
+uint32_t OpenGLRenderDevice::getVersion()
 {
 	if(version != 0) {
 		return version;
 	}
 
-	int32 majorVersion;
-	int32 minorVersion;
+	int32_t majorVersion;
+	int32_t minorVersion;
 		
 	glGetIntegerv(GL_MAJOR_VERSION, &majorVersion); 
 	glGetIntegerv(GL_MINOR_VERSION, &minorVersion);
 		
-	version = (uint32)(majorVersion * 100 + minorVersion * 10);
+	version = (uint32_t)(majorVersion * 100 + minorVersion * 10);
 	return version;
 }
 
@@ -759,7 +759,7 @@ String OpenGLRenderDevice::getShaderVersion()
 		return shaderVersion;
 	}
 	
-	uint32 version = getVersion();
+	uint32_t version = getVersion();
 
 	if(version >= 330) {
 		shaderVersion = StringFuncs::toString(version);
@@ -780,8 +780,8 @@ String OpenGLRenderDevice::getShaderVersion()
 		shaderVersion = "110";
 	}
 	else {
-		int32 majorVersion = version / 100;
-		int32 minorVersion = (version / 10) % 10;
+		int32_t majorVersion = version / 100;
+		int32_t minorVersion = (version / 10) % 10;
 		DEBUG_LOG(LOG_TYPE_RENDERER, LOG_ERROR,
 				"Error: OpenGL Version %d.%d does not support shaders.\n",
 				majorVersion, minorVersion);
@@ -852,7 +852,7 @@ static bool checkShaderError(GLuint shader, int flag,
 	return false;
 }
 
-static void addAllAttributes(GLuint program, const String& vertexShaderText, uint32 version)
+static void addAllAttributes(GLuint program, const String& vertexShaderText, uint32_t version)
 {
 	if(version >= 320) {
 		// Layout is enabled. Return.
@@ -889,7 +889,7 @@ static void addShaderUniforms(GLuint shaderProgram, const String& shaderText,
 {
 	GLint numBlocks;
 	glGetProgramiv(shaderProgram, GL_ACTIVE_UNIFORM_BLOCKS, &numBlocks);
-	for(int32 block = 0; block < numBlocks; ++block) {
+	for(int32_t block = 0; block < numBlocks; ++block) {
 		GLint nameLen;
 		glGetActiveUniformBlockiv(shaderProgram, block,
 				GL_UNIFORM_BLOCK_NAME_LENGTH, &nameLen);
@@ -905,7 +905,7 @@ static void addShaderUniforms(GLuint shaderProgram, const String& shaderText,
 	
 	// Would get GL_ACTIVE_UNIFORM_MAX_LENGTH, but buggy on some drivers
 	Array<GLchar> uniformName(256); 
-	for(int32 uniform = 0; uniform < numUniforms; ++uniform) {
+	for(int32_t uniform = 0; uniform < numUniforms; ++uniform) {
 		GLint arraySize = 0;
 		GLenum type = 0;
 		GLsizei actualLength = 0;

@@ -278,17 +278,17 @@ static void testIntersects()
 
 void testMemory()
 {
-//	int32 v1[] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
-//	int32 v2[] = {10, 11, 12, 13, 14, 15, 16, 17, 18, 19};
+//	int32_t v1[] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+//	int32_t v2[] = {10, 11, 12, 13, 14, 15, 16, 17, 18, 19};
 //
-//	for(uint32 i = 0; i < ARRAY_SIZE_IN_ELEMENTS(v1); i++) {
+//	for(uint32_t i = 0; i < ARRAY_SIZE_IN_ELEMENTS(v1); i++) {
 //		DEBUG_LOG_TEMP("%i, %i", v1[i], v2[i]);
 //	}
 //
 //	Memory::memswap(v1, v2, sizeof(v1));
 //	DEBUG_LOG_TEMP("%i", sizeof(v1));
 //
-//	for(uint32 i = 0; i < ARRAY_SIZE_IN_ELEMENTS(v1); i++) {
+//	for(uint32_t i = 0; i < ARRAY_SIZE_IN_ELEMENTS(v1); i++) {
 //		DEBUG_LOG_TEMP("%i, %i", v1[i], v2[i]);
 //	}
 
@@ -524,7 +524,7 @@ void Tests::runPerformanceTests()
 	float point1Floats[8][4];
 	float point2Floats[8][4];
 	float temp = 4.0f;
-	for(uint32 i = 0; i < 8; i++) {
+	for(uint32_t i = 0; i < 8; i++) {
 //		vec1s[i] = Vector::make(Math::randf()*2.0f-1.0f, Math::randf()*2.0f-1.0f, Math::randf()*2.0f-1.0f, Math::randf()*2.0f-1.0f);
 //		vec2s[i] = Vector::make(Math::randf()*2.0f-1.0f, Math::randf()*2.0f-1.0f, Math::randf()*2.0f-1.0f, Math::randf()*2.0f-1.0f);
 		vec1s[i] = vec1s[i] / Vector::make(temp,temp,temp,temp);
@@ -532,7 +532,7 @@ void Tests::runPerformanceTests()
 		vec1s[i].store4f(point1Floats[i]);
 		vec2s[i].store4f(point2Floats[i]);
 	}
-	for(uint32 i = 0; i < 100000000; i++) {
+	for(uint32_t i = 0; i < 100000000; i++) {
 //		naiveQuatRotate(point1Floats[0],point1Floats[0],point2Floats[0]);
 //		naiveQuatRotate(point1Floats[1],point1Floats[1],point2Floats[1]);
 //		naiveQuatRotate(point1Floats[2],point1Floats[2],point2Floats[2]);
@@ -560,7 +560,7 @@ void Tests::runPerformanceTests()
 //		vec1s[5] = vec1s[5].quatRotateVec(vec2s[5]);
 //		vec1s[6] = vec1s[6].quatRotateVec(vec2s[6]);
 //		vec1s[7] = vec1s[7].quatRotateVec(vec2s[7]);
-		for(uint32 j = 0; j < 8; j++) {
+		for(uint32_t j = 0; j < 8; j++) {
 //			vec1s[j] = vec1s[j].dot4(vec2s[j]);
 //			float dotProduct0 = point1Floats[j][0]*point2Floats[j][0]+point1Floats[j][1]*point2Floats[j][1]+point1Floats[j][2]*point2Floats[j][2]+point1Floats[j][3]*point2Floats[j][3];
 //			point1Floats[j][0] = dotProduct0;
@@ -569,7 +569,7 @@ void Tests::runPerformanceTests()
 //			point1Floats[j][3] = dotProduct0;
 		}
 	}
-	for(uint32 i = 0; i < 8; i++) {
+	for(uint32_t i = 0; i < 8; i++) {
 //		vec1s[i]=vec1s[i].load4f(point1Floats[i]);
 //		vec2s[i]=vec2s[i].load4f(point2Floats[i]);
 	}

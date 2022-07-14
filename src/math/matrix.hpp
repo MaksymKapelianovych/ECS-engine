@@ -49,7 +49,7 @@ public:
 	Quaternion getRotation() const;
 	FORCEINLINE Vector getTranslation() const;
 
-	FORCEINLINE Vector operator[](uint32 index) const {
+	FORCEINLINE Vector operator[](uint32_t index) const {
 		assertCheck(index < 4);
 		return m[index];
 	}
@@ -140,7 +140,7 @@ FORCEINLINE Matrix::Matrix(const Vector& vecX, const Vector& vecY,
 FORCEINLINE Matrix Matrix::operator+ (const Matrix& other) const
 {
 	Matrix result;
-	for(uint32 i = 0; i < 4; i++) {
+	for(uint32_t i = 0; i < 4; i++) {
 		result.m[i] = m[i] + other.m[i];
 	}
 	return result;
@@ -148,7 +148,7 @@ FORCEINLINE Matrix Matrix::operator+ (const Matrix& other) const
 
 FORCEINLINE Matrix& Matrix::operator+= (const Matrix& other)
 {
-	for(uint32 i = 0; i < 4; i++) {
+	for(uint32_t i = 0; i < 4; i++) {
 		m[i] = m[i] + other.m[i];
 	}
 	return *this;
@@ -171,7 +171,7 @@ FORCEINLINE Matrix Matrix::operator* (float amt) const
 {
 	Matrix result;
 	Vector vecAmt = Vector::load1f(amt);
-	for(uint32 i = 0; i < 4; i++) {
+	for(uint32_t i = 0; i < 4; i++) {
 		result.m[i] = m[i] * vecAmt;
 	}
 	return result;
@@ -180,7 +180,7 @@ FORCEINLINE Matrix Matrix::operator* (float amt) const
 FORCEINLINE Matrix& Matrix::operator*= (float amt)
 {
 	Vector vecAmt = Vector::load1f(amt);
-	for(uint32 i = 0; i < 4; i++) {
+	for(uint32_t i = 0; i < 4; i++) {
 		m[i] = m[i] * vecAmt;
 	}
 	return *this;
@@ -188,7 +188,7 @@ FORCEINLINE Matrix& Matrix::operator*= (float amt)
 
 FORCEINLINE bool Matrix::operator==(const Matrix& other) const
 {
-	for(uint32 i = 0; i < 4; i++) {
+	for(uint32_t i = 0; i < 4; i++) {
 		if(!(m[i] != other.m[i]).isZero4f()) {
 			return false;
 		}
@@ -204,7 +204,7 @@ FORCEINLINE bool Matrix::operator!=(const Matrix& other) const
 
 FORCEINLINE bool Matrix::equals(const Matrix& other, float errorMargin) const
 {
-	for(uint32 i = 0; i < 4; i++) {
+	for(uint32_t i = 0; i < 4; i++) {
 		if(!(m[i].notEquals(other.m[i], errorMargin)).isZero4f()) {
 			return false;
 		}
@@ -231,7 +231,7 @@ FORCEINLINE Matrix Matrix::transpose() const
 	m[2].store4f(m2);
 	m[3].store4f(m3);
 
-	for(uint32 i = 0; i < 4; i++) {
+	for(uint32_t i = 0; i < 4; i++) {
 		result.m[i] = Vector::make(m0[i], m1[i], m2[i], m3[i]);
 	}
 
@@ -259,7 +259,7 @@ FORCEINLINE Matrix Matrix::inverse() const
 FORCEINLINE Vector Matrix::getScale() const
 {
 	Vector invScale = VectorConstants::ZERO;
-	for(uint32 i = 0; i < 4; i++) {
+	for(uint32_t i = 0; i < 4; i++) {
 		invScale = invScale + m[i]*m[i];
 	}
 	invScale = invScale.rsqrt().select(VectorConstants::MASK_W,VectorConstants::ONE);
@@ -269,11 +269,11 @@ FORCEINLINE Vector Matrix::getScale() const
 FORCEINLINE Vector Matrix::removeScale(float errorMargin)
 {
 	Vector invScale = VectorConstants::ZERO;
-	for(uint32 i = 0; i < 4; i++) {
+	for(uint32_t i = 0; i < 4; i++) {
 		invScale = invScale + m[i]*m[i];
 	}
 	invScale = invScale.rsqrt().select(VectorConstants::MASK_W,VectorConstants::ONE);
-	for(uint32 i = 0; i < 4; i++) {
+	for(uint32_t i = 0; i < 4; i++) {
 		m[i] = m[i] * invScale;
 	}
 	return invScale.reciprocal();
@@ -286,7 +286,7 @@ FORCEINLINE Vector Matrix::getTranslation() const
 
 FORCEINLINE Matrix Matrix::applyScale(const Vector& scale)
 {
-	for(uint32 i = 0; i < 4; i++) {
+	for(uint32_t i = 0; i < 4; i++) {
 		m[i] = m[i] * scale;//Vector::make(scale[i], scale[i], scale[i], 0.0f);
 	}
 	return *this;

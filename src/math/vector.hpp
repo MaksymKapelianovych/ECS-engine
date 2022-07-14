@@ -43,10 +43,10 @@ public:
 	FORCEINLINE Vector3f operator*=(float val);
 	FORCEINLINE Vector3f operator/=(float val);
 
-	float operator[](uint32 index) const;
+	float operator[](uint32_t index) const;
 
 	void set(float x, float y, float z);
-	void set(uint32 index, float val);
+	void set(uint32_t index, float val);
 	float max() const;
 	float min() const;
 	float absMax() const;
@@ -271,10 +271,10 @@ public:
 	FORCEINLINE Vector2f operator*=(float val);
 	FORCEINLINE Vector2f operator/=(float val);
 
-	float operator[](uint32 index) const;
+	float operator[](uint32_t index) const;
 
 	void set(float x, float y);
-	void set(uint32 index, float val);
+	void set(uint32_t index, float val);
 	float max() const;
 	float min() const;
 	float absMax() const;

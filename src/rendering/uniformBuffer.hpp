@@ -5,7 +5,7 @@
 class UniformBuffer
 {
 public:
-	inline UniformBuffer(RenderDevice& deviceIn, uintptr dataSize,
+	inline UniformBuffer(RenderDevice& deviceIn, uintptr_t dataSize,
 		enum RenderDevice::BufferUsage usage, const void* data = nullptr) :
 		device(&deviceIn), 
 		deviceId(device->createUniformBuffer(data, dataSize, usage)),
@@ -15,24 +15,24 @@ public:
 		deviceId = device->releaseUniformBuffer(deviceId);
 	}
 
-	inline void update(const void* data, uintptr dataSize);
+	inline void update(const void* data, uintptr_t dataSize);
 	inline void update(const void* data) { update(data, size); }
 	
-	inline uint32 getId();
+	inline uint32_t getId();
 private:
 	RenderDevice* device;
-	uint32 deviceId;
-	uintptr size;
+	uint32_t deviceId;
+	uintptr_t size;
 
 	NULL_COPY_AND_ASSIGN(UniformBuffer);
 };
 
-inline uint32 UniformBuffer::getId()
+inline uint32_t UniformBuffer::getId()
 {
 	return deviceId;
 }
 
-inline void UniformBuffer::update(const void* data, uintptr dataSize)
+inline void UniformBuffer::update(const void* data, uintptr_t dataSize)
 {
 	device->updateUniformBuffer(deviceId, data, dataSize);
 }

@@ -18,16 +18,16 @@ public:
 
 	inline void setUniformBuffer(const String& name, UniformBuffer& buffer);
 	inline void setSampler(const String& name, Texture& texture, Sampler& sampler,
-			uint32 unit);
-	inline uint32 getId();
+			uint32_t unit);
+	inline uint32_t getId();
 private:
 	RenderDevice* device;
-	uint32 deviceId;
+	uint32_t deviceId;
 
 	NULL_COPY_AND_ASSIGN(Shader);
 };
 
-inline uint32 Shader::getId()
+inline uint32_t Shader::getId()
 {
 	return deviceId;
 }
@@ -38,7 +38,7 @@ inline void Shader::setUniformBuffer(const String& name, UniformBuffer& buffer)
 }
 
 inline void Shader::setSampler(const String& name, Texture& texture, Sampler& sampler,
-		uint32 unit)
+		uint32_t unit)
 {
 	device->setShaderSampler(deviceId, name, texture.getId(), sampler.getId(), unit);
 }

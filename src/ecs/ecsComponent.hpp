@@ -6,37 +6,38 @@
 
 struct BaseECSComponent;
 typedef void* EntityHandle;
-typedef uint32 (*ECSComponentCreateFunction)(Array<uint8>& memory, EntityHandle entity, BaseECSComponent* comp);
+typedef uint32_t (*ECSComponentCreateFunction)(Array<uint8_t>& memory, EntityHandle entity, BaseECSComponent* comp);
 typedef void (*ECSComponentFreeFunction)(BaseECSComponent* comp);
 #define NULL_ENTITY_HANDLE nullptr
 
 struct BaseECSComponent
 {
 public:
-	static uint32 registerComponentType(ECSComponentCreateFunction createfn,
+	static uint32_t registerComponentType(ECSComponentCreateFunction createfn,
 			ECSComponentFreeFunction freefn, size_t size);
 	EntityHandle entity = NULL_ENTITY_HANDLE;
 
-	inline static ECSComponentCreateFunction getTypeCreateFunction(uint32 id)
+	inline static ECSComponentCreateFunction getTypeCreateFunction(uint32_t id)
 	{
 		return std::get<0>((*componentTypes)[id]);
 	}
 
-	inline static ECSComponentFreeFunction getTypeFreeFunction(uint32 id)
+	inline static ECSComponentFreeFunction getTypeFreeFunction(uint32_t id)
 	{
 		return std::get<1>((*componentTypes)[id]);
 	}
 
-	inline static size_t getTypeSize(uint32 id)
+	inline static size_t getTypeSize(uint32_t id)
 	{
 		return std::get<2>((*componentTypes)[id]);
 	}
 
-	inline static bool isTypeValid(uint32 id)
+	inline static bool isTypeValid(uint32_t id)
 	{
 		return id < componentTypes->size();
 	}
 private:
+	// std::tuple<CreateFunction, FreeFunction, TypeSize>
 	static Array<std::tuple<ECSComponentCreateFunction, ECSComponentFreeFunction, size_t> >* componentTypes;
 };
 
@@ -45,14 +46,14 @@ struct ECSComponent : public BaseECSComponent
 {
 	static const ECSComponentCreateFunction CREATE_FUNCTION;
 	static const ECSComponentFreeFunction FREE_FUNCTION;
-	static const uint32 ID;
+	static const uint32_t ID;
 	static const size_t SIZE; 
 };
 
 template<typename Component>
-uint32 ECSComponentCreate(Array<uint8>& memory, EntityHandle entity, BaseECSComponent* comp)
+uint32_t ECSComponentCreate(Array<uint8_t>& memory, EntityHandle entity, BaseECSComponent* comp)
 {
-	uint32 index = memory.size();
+	uint32_t index = memory.size();
 	memory.resize(index+Component::SIZE);
 	Component* component = new(&memory[index])Component(*(Component*)comp);
 	component->entity = entity;
@@ -67,7 +68,7 @@ void ECSComponentFree(BaseECSComponent* comp)
 }
 
 template<typename T>
-const uint32 ECSComponent<T>::ID(BaseECSComponent::registerComponentType(ECSComponentCreate<T>, ECSComponentFree<T>, sizeof(T)));
+const uint32_t ECSComponent<T>::ID(BaseECSComponent::registerComponentType(ECSComponentCreate<T>, ECSComponentFree<T>, sizeof(T)));
 
 template<typename T>
 const size_t ECSComponent<T>::SIZE(sizeof(T));

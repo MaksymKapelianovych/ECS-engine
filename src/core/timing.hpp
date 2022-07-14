@@ -10,7 +10,7 @@ namespace Time
 		return PlatformTiming::getTime();
 	}
 
-	inline void sleep(uint32 milliseconds)
+	inline void sleep(uint32_t milliseconds)
 	{
 		PlatformTiming::sleep(milliseconds);
 	}

@@ -34,7 +34,7 @@ public:
 		MovementControlComponent* movementControl = (MovementControlComponent*)components[0];
 		MotionComponent* motionComponent = (MotionComponent*)components[1];
 
-		for(uint32 i = 0; i < movementControl->movementControls.size(); i++) {
+		for(uint32_t i = 0; i < movementControl->movementControls.size(); i++) {
 			Vector3f movement = movementControl->movementControls[i].movement;
 			float inputAmt = movementControl->movementControls[i].inputControl->getAmt();
 			float inputDelta = inputAmt - movementControl->movementControls[i].lastInputAmt;

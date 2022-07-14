@@ -3,7 +3,7 @@
 #include "core/common.hpp"
 #include "core/application.hpp"
 #include "dataStructures/string.hpp"
-
+#define SDL_MAIN_HANDLED
 #include <SDL2/SDL.h>
 
 typedef SDL_Window* WindowHandle;
@@ -11,16 +11,16 @@ typedef SDL_Window* WindowHandle;
 class SDLWindow
 {
 public:
-	SDLWindow(const Application& app, int32 width, int32 height, const String& title);
+	SDLWindow(const Application& app, int32_t width, int32_t height, const String& title);
 	virtual ~SDLWindow();
 
 	WindowHandle getWindowHandle();
-	void changeSize(int32 width, int32 height);
+	void changeSize(int32_t width, int32_t height);
 	void present();
-	int32 getWidth() const;
-	int32 getHeight() const;
+	int32_t getWidth() const;
+	int32_t getHeight() const;
 private:
 	WindowHandle window;
-	int32 width;
-	int32 height;
+	int32_t width;
+	int32_t height;
 };

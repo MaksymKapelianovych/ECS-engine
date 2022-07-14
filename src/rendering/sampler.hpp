@@ -20,15 +20,15 @@ public:
 		deviceId = device->releaseSampler(deviceId);
 	}
 
-	inline uint32 getId();
+	inline uint32_t getId();
 private:
 	RenderDevice* device;
-	uint32 deviceId;
+	uint32_t deviceId;
 
 	NULL_COPY_AND_ASSIGN(Sampler);
 };
 
-inline uint32 Sampler::getId()
+inline uint32_t Sampler::getId()
 {
 	return deviceId;
 }

@@ -8,8 +8,8 @@ class AABB
 public:
 	FORCEINLINE AABB() {}
 	FORCEINLINE AABB(const Vector3f& minExtents, const Vector3f& maxExtents);
-	AABB(Vector3f* points, uint32 amt);
-	AABB(float* points, uint32 amt, uint32 stride=0);
+	AABB(Vector3f* points, uint32_t amt);
+	AABB(float* points, uint32_t amt, uint32_t stride=0);
 
 	bool intersectRay(const Vector3f& start, const Vector3f& rayDir, float& point1, float& point2) const;
 	bool intersectLine(const Vector3f& start, const Vector3f& end) const;

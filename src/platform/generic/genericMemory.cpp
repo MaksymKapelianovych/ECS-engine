@@ -3,17 +3,17 @@
 #include <cstdlib>
 #include <stdio.h>
 
-void* GenericMemory::malloc(uintptr amt, uint32 alignment)
+void* GenericMemory::malloc(uintptr_t amt, uint32_t alignment)
 {
 	alignment = Math::max(amt >= 16 ? 16u : 8u, alignment);
-	void* ptr = ::malloc(amt + alignment + sizeof(void*) + sizeof(uintptr));
-	void* result = align((uint8*)ptr + sizeof(void*) + sizeof(uintptr), (uintptr)alignment);
-	*((void**)((uint8*)result - sizeof(void*))) = ptr;
-	*((uintptr*)((uint8*)result - sizeof(void*) - sizeof(uintptr))) = amt;
+	void* ptr = ::malloc(amt + alignment + sizeof(void*) + sizeof(uintptr_t));
+	void* result = align((uint8_t*)ptr + sizeof(void*) + sizeof(uintptr_t), (uintptr_t)alignment);
+	*((void**)((uint8_t*)result - sizeof(void*))) = ptr;
+	*((uintptr_t*)((uint8_t*)result - sizeof(void*) - sizeof(uintptr_t))) = amt;
 	return result;
 }
 
-void* GenericMemory::realloc(void* ptr, uintptr amt, uint32 alignment)
+void* GenericMemory::realloc(void* ptr, uintptr_t amt, uint32_t alignment)
 {
 	alignment = Math::max(amt >= 16 ? 16u : 8u, alignment);
 	if(ptr == nullptr) {
@@ -26,7 +26,7 @@ void* GenericMemory::realloc(void* ptr, uintptr amt, uint32 alignment)
 	}
 
 	void* result = malloc(amt, alignment);
-	uintptr size = GenericMemory::getAllocSize(ptr);
+	uintptr_t size = GenericMemory::getAllocSize(ptr);
 	GenericMemory::memcpy(result, ptr, Math::min(size, amt));
 	free(ptr);
 
@@ -36,22 +36,22 @@ void* GenericMemory::realloc(void* ptr, uintptr amt, uint32 alignment)
 void* GenericMemory::free(void* ptr)
 {
 	if(ptr) {
-		::free(*((void**)((uint8*)ptr - sizeof(void*))));
+		::free(*((void**)((uint8_t*)ptr - sizeof(void*))));
 	}
 	return nullptr;
 }
 
-uintptr GenericMemory::getAllocSize(void* ptr)
+uintptr_t GenericMemory::getAllocSize(void* ptr)
 {
-	return *((uintptr*)((uint8*)ptr - sizeof(void*) - sizeof(uintptr)));
+	return *((uintptr_t*)((uint8_t*)ptr - sizeof(void*) - sizeof(uintptr_t)));
 }
 
-void GenericMemory::bigmemswap(void* a, void* b, uintptr size)
+void GenericMemory::bigmemswap(void* a, void* b, uintptr_t size)
 {
-	uint64* ptr1 = (uint64*)a;
-	uint64* ptr2 = (uint64*)b;
+	uint64_t* ptr1 = (uint64_t*)a;
+	uint64_t* ptr2 = (uint64_t*)b;
 	while(size > GENERIC_MEMORY_SMALL_MEMSWAP_MAX) {
-		uint64 tmp = *ptr1;
+		uint64_t tmp = *ptr1;
 		*ptr1 = *ptr2;
 		*ptr2 = tmp;
 		size -= 8;

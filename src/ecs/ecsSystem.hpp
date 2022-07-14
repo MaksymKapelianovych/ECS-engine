@@ -9,26 +9,27 @@ public:
 	{
 		FLAG_OPTIONAL = 1,
 	};
-	BaseECSSystem() {}
+	BaseECSSystem() = default;
+	virtual ~BaseECSSystem() = default;
 	virtual void updateComponents(float delta, BaseECSComponent** components) {}
-	const Array<uint32>& getComponentTypes()
+	const Array<uint32_t>& getComponentTypes()
 	{
 		return componentTypes;
 	}
-	const Array<uint32>& getComponentFlags()
+	const Array<uint32_t>& getComponentFlags()
 	{
 		return componentFlags;
 	}
 	bool isValid();
 protected:
-	void addComponentType(uint32 componentType, uint32 componentFlag = 0)
+	void addComponentType(uint32_t componentType, uint32_t componentFlag = 0)
 	{
 		componentTypes.push_back(componentType);
 		componentFlags.push_back(componentFlag);
 	}
 private:
-	Array<uint32> componentTypes;
-	Array<uint32> componentFlags;
+	Array<uint32_t> componentTypes;
+	Array<uint32_t> componentFlags;
 };
 
 class ECSSystemList
@@ -45,7 +46,7 @@ public:
 	inline size_t size() {
 		return systems.size();
 	}
-	inline BaseECSSystem* operator[](uint32 index) {
+	inline BaseECSSystem* operator[](uint32_t index) {
 		return systems[index];
 	}
 	bool removeSystem(BaseECSSystem& system);

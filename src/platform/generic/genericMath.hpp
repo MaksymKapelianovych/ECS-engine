@@ -16,9 +16,9 @@
  */
 struct GenericMath
 {
-	static CONSTEXPR FORCEINLINE int32 truncToInt(float val)
+	static CONSTEXPR FORCEINLINE int32_t truncToInt(float val)
 	{
-		return (int32)val;
+		return (int32_t)val;
 	}
 
 	static CONSTEXPR FORCEINLINE float truncToFloat(float val)
@@ -26,7 +26,7 @@ struct GenericMath
 		return (float)truncToInt(val);
 	}
 
-	static FORCEINLINE int32 floorToInt(float val)
+	static FORCEINLINE int32_t floorToInt(float val)
 	{
 		return truncToInt(floorToFloat(val));
 	}
@@ -41,7 +41,7 @@ struct GenericMath
 		return floor(val);
 	}
 
-	static FORCEINLINE int32 roundToInt(float val)
+	static FORCEINLINE int32_t roundToInt(float val)
 	{
 		return ceilToInt(val - 0.5f);
 	}
@@ -51,7 +51,7 @@ struct GenericMath
 		return ceilToFloat(val - 0.5f);
 	}
 
-	static FORCEINLINE int32 ceilToInt(float val)
+	static FORCEINLINE int32_t ceilToInt(float val)
 	{
 		return truncToInt(ceilf(val));
 	}
@@ -164,7 +164,7 @@ struct GenericMath
 	{
 		union {
 			float f;
-			uint32 i;
+			uint32_t i;
 		} f;
 		f.f = val;
 		return (f.i & 0x7FFFFFFF) > 0x7F800000;
@@ -174,20 +174,20 @@ struct GenericMath
 	{
 		union {
 			float f;
-			uint32 i;
+			uint32_t i;
 		} f;
 		f.f = val;
 		return (f.i & 0x7F800000) != 0x7F800000;
 	}
 
-	static FORCEINLINE int32 rand() { return ::rand(); }
-	static FORCEINLINE void seedRand(int32 seed) { srand((uint32)seed); }
+	static FORCEINLINE int32_t rand() { return ::rand(); }
+	static FORCEINLINE void seedRand(int32_t seed) { srand((uint32_t)seed); }
 	static FORCEINLINE float randf() { return ::rand()/(float)RAND_MAX; }
 	static FORCEINLINE float randf(float min, float max) { return lerp(min, max, randf()); }
 	
-	static FORCEINLINE uint32 floorLog2(uint32 val)
+	static FORCEINLINE uint32_t floorLog2(uint32_t val)
 	{
-		uint32 pos = 0;
+		uint32_t pos = 0;
 		if (val >= 1<<16) { val >>= 16; pos += 16; }
 		if (val >= 1<< 8) { val >>=  8; pos +=  8; }
 		if (val >= 1<< 4) { val >>=  4; pos +=  4; }
@@ -196,7 +196,7 @@ struct GenericMath
 		return (val == 0) ? 0 : pos;
 	}
 
-	static FORCEINLINE uint32 getNumLeadingZeroes(uint32 val)
+	static FORCEINLINE uint32_t getNumLeadingZeroes(uint32_t val)
 	{
 		if(val == 0) {
 			return 32;
@@ -204,7 +204,7 @@ struct GenericMath
 		return 31 - floorLog2(val);
 	}
 
-	static FORCEINLINE uint32 ceilLog2(uint32 val)
+	static FORCEINLINE uint32_t ceilLog2(uint32_t val)
 	{
 		if(val <= 1) {
 			return 0;
@@ -212,7 +212,7 @@ struct GenericMath
 		return floorLog2(val-1)+1;
 	}
 
-	static FORCEINLINE uint32 roundUpToNextPowerOf2(uint32 val)
+	static FORCEINLINE uint32_t roundUpToNextPowerOf2(uint32_t val)
 	{
 		return 1 << ceilLog2(val);
 	}

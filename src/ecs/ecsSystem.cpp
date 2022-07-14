@@ -2,7 +2,7 @@
 
 bool BaseECSSystem::isValid()
 {
-	for(uint32 i = 0;  i < componentFlags.size(); i++) {
+	for(uint32_t i = 0;  i < componentFlags.size(); i++) {
 		if((componentFlags[i] & BaseECSSystem::FLAG_OPTIONAL) == 0) {
 			return true;
 		}
@@ -12,7 +12,7 @@ bool BaseECSSystem::isValid()
 
 bool ECSSystemList::removeSystem(BaseECSSystem& system)
 {
-	for(uint32 i = 0; i < systems.size(); i++) {
+	for(uint32_t i = 0; i < systems.size(); i++) {
 		if(&system == systems[i]) {
 			systems.erase(systems.begin() + i);
 			return true;

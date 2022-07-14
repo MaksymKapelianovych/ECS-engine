@@ -13,10 +13,10 @@ public:
 
 	// TODO: Ensure texture isn't compressed. Otherwise, render target creation fails.
 	inline RenderTarget(RenderDevice& deviceIn,
-			Texture& texture, uint32 width, uint32 height,
+			Texture& texture, uint32_t width, uint32_t height,
 			enum RenderDevice::FramebufferAttachment attachment
 				= RenderDevice::ATTACHMENT_COLOR,
-			uint32 attachmentNumber = 0, uint32 mipLevel = 0) :
+			uint32_t attachmentNumber = 0, uint32_t mipLevel = 0) :
 		device(&deviceIn),
 		deviceId(device->createRenderTarget(texture.getId(), width, height,
 					attachment, attachmentNumber, mipLevel)) {
@@ -26,7 +26,7 @@ public:
 			Texture& texture,
 			enum RenderDevice::FramebufferAttachment attachment
 				= RenderDevice::ATTACHMENT_COLOR,
-			uint32 attachmentNumber = 0, uint32 mipLevel = 0) :
+			uint32_t attachmentNumber = 0, uint32_t mipLevel = 0) :
 		device(&deviceIn),
 		deviceId(device->createRenderTarget(texture.getId(),
 					texture.getWidth(), texture.getHeight(),
@@ -49,15 +49,15 @@ public:
 		deviceId = device->releaseRenderTarget(deviceId);
 	}
 
-	inline uint32 getId();
+	inline uint32_t getId();
 private:
 	RenderDevice* device;
-	uint32 deviceId;
+	uint32_t deviceId;
 
 	NULL_COPY_AND_ASSIGN(RenderTarget);
 };
 
-inline uint32 RenderTarget::getId()
+inline uint32_t RenderTarget::getId()
 {
 	return deviceId;
 }

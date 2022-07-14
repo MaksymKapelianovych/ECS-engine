@@ -8,19 +8,19 @@ public:
 	virtual ~DDSTexture();
 
 	bool load(const char* fileName);
-	inline uint32 getMipMapCount() const {
+	inline uint32_t getMipMapCount() const {
 		return mipMapCount;
 	}
 
-	inline uint32 getFourCC() const {
+	inline uint32_t getFourCC() const {
 		return fourCC;
 	}
 
-	inline uint32 getWidth() const {
+	inline uint32_t getWidth() const {
 		return width;
 	}
 
-	inline uint32 getHeight() const {
+	inline uint32_t getHeight() const {
 		return height;
 	}
 
@@ -29,10 +29,10 @@ public:
 	}
 private:
 	unsigned char* buffer;
-	uint32 height;
-	uint32 width;
-	uint32 mipMapCount;
-	uint32 fourCC;
+	uint32_t height;
+	uint32_t width;
+	uint32_t mipMapCount;
+	uint32_t fourCC;
 	
 	void cleanup();
 	NULL_COPY_AND_ASSIGN(DDSTexture);

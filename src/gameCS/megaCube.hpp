@@ -9,7 +9,7 @@ struct MegaCubeComponent : public ECSComponent<MegaCubeComponent>
 	float pos[3];
 	float vel[3];
 	float acc[3];
-	uint8 texIndex;
+	uint8_t texIndex;
 };
 
 class MegaCubeMotionSystem : public BaseECSSystem

@@ -7,7 +7,7 @@
 // This was better than any of the "fast" algorithms combined, including
 // Ritter's algorithm, though it did worse than the proposed algorithm which
 // would require more implementation for about the same speed
-Sphere::Sphere(Vector3f* points, uint32 amt)
+Sphere::Sphere(Vector3f* points, uint32_t amt)
 {
 	if(amt == 0) {
 		data = VectorConstants::ZERO;
@@ -17,7 +17,7 @@ Sphere::Sphere(Vector3f* points, uint32 amt)
 	extents[0] = points[0];
 	extents[1] = points[0];
 	Vector3f meanPoint = VectorConstants::ZERO;
-	for(uint32 i = 1; i < amt; i++) {
+	for(uint32_t i = 1; i < amt; i++) {
 		Vector3f point = points[i];
 		extents[0] = extents[0].min(point);
 		extents[1] = extents[1].max(point);
@@ -27,7 +27,7 @@ Sphere::Sphere(Vector3f* points, uint32 amt)
 	Vector3f center2 = meanPoint * Math::reciprocal(((float)amt));
 	float radius21 = 0.0f;
 	float radius22 = 0.0f;
-	for(uint32 i = 0; i < amt; i++) {
+	for(uint32_t i = 0; i < amt; i++) {
 		radius21 = Math::max(radius21, (center1-points[i]).lengthSquared());
 		radius22 = Math::max(radius22, (center2-points[i]).lengthSquared());
 	}
@@ -38,7 +38,7 @@ Sphere::Sphere(Vector3f* points, uint32 amt)
 	}
 }
 
-Sphere::Sphere(float* points, uint32 amt)
+Sphere::Sphere(float* points, uint32_t amt)
 {
 	if(amt == 0) {
 		data = VectorConstants::ZERO;
@@ -49,8 +49,8 @@ Sphere::Sphere(float* points, uint32 amt)
 	extents[0] = point0;
 	extents[1] = point0;
 	Vector3f meanPoint = VectorConstants::ZERO;
-	uintptr index = 3;
-	for(uint32 i = 1; i < amt; i++) {
+	uintptr_t index = 3;
+	for(uint32_t i = 1; i < amt; i++) {
 		Vector3f point = Vector3f(points[index],points[index+1],points[index+2]);
 		extents[0] = extents[0].min(point);
 		extents[1] = extents[1].max(point);
@@ -62,7 +62,7 @@ Sphere::Sphere(float* points, uint32 amt)
 	float radius21 = 0.0f;
 	float radius22 = 0.0f;
 	index = 0;
-	for(uint32 i = 0; i < amt; i++) {
+	for(uint32_t i = 0; i < amt; i++) {
 		Vector3f point = Vector3f(points[index],points[index+1],points[index+2]);
 		radius21 = Math::max(radius21, (center1-point).lengthSquared());
 		radius22 = Math::max(radius22, (center2-point).lengthSquared());

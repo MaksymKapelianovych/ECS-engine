@@ -42,7 +42,7 @@ public:
 	static FORCEINLINE float matrixDeterminant3x3Vector(const GenericVector* m)
 	{
 		float M[4][4];
-		for(uint32 i = 0; i < 4; i++) {
+		for(uint32_t i = 0; i < 4; i++) {
 			m[i].store4f(M[i]);
 		}
 		return 
@@ -62,7 +62,7 @@ public:
 
 		GenericVector* m = (GenericVector*)mat;
 		float M[4][4];
-		for(uint32 i = 0; i < 4; i++) {
+		for(uint32_t i = 0; i < 4; i++) {
 			m[i].store4f(M[i]);
 		}
 		
@@ -91,7 +91,7 @@ public:
 
 		GenericVector* m = (GenericVector*)src;
 		float M[4][4];
-		for(uint32 i = 0; i < 4; i++) {
+		for(uint32_t i = 0; i < 4; i++) {
 			m[i].store4f(M[i]);
 		}
 
@@ -150,23 +150,23 @@ public:
 		Memory::memcpy(dest, mat, sizeof(mat));
 	}
 	
-	static FORCEINLINE GenericVector make(uint32 x, uint32 y, uint32 z, uint32 w)
+	static FORCEINLINE GenericVector make(uint32_t x, uint32_t y, uint32_t z, uint32_t w)
 	{
 		GenericVector vec;
-		vec.v[0] = *((uint32*)&x);
-		vec.v[1] = *((uint32*)&y);
-		vec.v[2] = *((uint32*)&z);
-		vec.v[3] = *((uint32*)&w);
+		vec.v[0] = *((uint32_t*)&x);
+		vec.v[1] = *((uint32_t*)&y);
+		vec.v[2] = *((uint32_t*)&z);
+		vec.v[3] = *((uint32_t*)&w);
 		return vec;
 	}
 
-	static FORCEINLINE const GenericVector mask(uint32 index)
+	static FORCEINLINE const GenericVector mask(uint32_t index)
 	{
 		static const GenericVector masks[4] = {
-			GenericVector::make((uint32)0, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF),
-			GenericVector::make((uint32)0xFFFFFFFF, 0, 0xFFFFFFFF, 0xFFFFFFFF),
-			GenericVector::make((uint32)0xFFFFFFFF, 0xFFFFFFFF, 0, 0xFFFFFFFF),
-			GenericVector::make((uint32)0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0) };
+			GenericVector::make((uint32_t)0, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF),
+			GenericVector::make((uint32_t)0xFFFFFFFF, 0, 0xFFFFFFFF, 0xFFFFFFFF),
+			GenericVector::make((uint32_t)0xFFFFFFFF, 0xFFFFFFFF, 0, 0xFFFFFFFF),
+			GenericVector::make((uint32_t)0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0) };
 		assertCheck(index < 4);
 		return masks[index];
 	}
@@ -236,13 +236,13 @@ public:
 		return storeAligned(result);
 	}
 
-	FORCEINLINE GenericVector replicate(uint32 index) const
+	FORCEINLINE GenericVector replicate(uint32_t index) const
 	{
 		assertCheck(index <= 3);
 		return make(v[index], v[index], v[index], v[index]);
 	}
 
-//	FORCEINLINE GenericVector swizzle(uint32 x, uint32 y, uint32 z, uint32 w) const
+//	FORCEINLINE GenericVector swizzle(uint32_t x, uint32_t y, uint32_t z, uint32_t w) const
 //	{
 //		assertCheck(x <= 3);
 //		assertCheck(y <= 3);
@@ -258,7 +258,7 @@ public:
 private:
 	float getSign(float r) const
 	{
-        return (((uint32*)(&r))[1-1] & 0x80000000);
+        return (((uint32_t*)(&r))[1-1] & 0x80000000);
 	}
 public:
 
@@ -465,7 +465,7 @@ public:
 	FORCEINLINE GenericVector operator==(const GenericVector& other) const
 	{
 		return make(
-				(uint32)(v[0] == other.v[0] ? 0xFFFFFFFF : 0),
+				(uint32_t)(v[0] == other.v[0] ? 0xFFFFFFFF : 0),
 				v[1] == other.v[1] ? 0xFFFFFFFF : 0,
 				v[2] == other.v[2] ? 0xFFFFFFFF : 0,
 				v[3] == other.v[3] ? 0xFFFFFFFF : 0);
@@ -485,7 +485,7 @@ public:
 	FORCEINLINE GenericVector operator!=(const GenericVector& other) const
 	{
 		return make(
-				(uint32)(v[0] != other.v[0] ? 0xFFFFFFFF : 0),
+				(uint32_t)(v[0] != other.v[0] ? 0xFFFFFFFF : 0),
 				v[1] != other.v[1] ? 0xFFFFFFFF : 0,
 				v[2] != other.v[2] ? 0xFFFFFFFF : 0,
 				v[3] != other.v[3] ? 0xFFFFFFFF : 0);
@@ -494,7 +494,7 @@ public:
 	FORCEINLINE GenericVector operator>(const GenericVector& other) const
 	{
 		return make(
-				(uint32)(v[0] > other.v[0] ? 0xFFFFFFFF : 0),
+				(uint32_t)(v[0] > other.v[0] ? 0xFFFFFFFF : 0),
 				v[1] > other.v[1] ? 0xFFFFFFFF : 0,
 				v[2] > other.v[2] ? 0xFFFFFFFF : 0,
 				v[3] > other.v[3] ? 0xFFFFFFFF : 0);
@@ -503,7 +503,7 @@ public:
 	FORCEINLINE GenericVector operator>=(const GenericVector& other) const
 	{
 		return make(
-				(uint32)(v[0] >= other.v[0] ? 0xFFFFFFFF : 0),
+				(uint32_t)(v[0] >= other.v[0] ? 0xFFFFFFFF : 0),
 				v[1] >= other.v[1] ? 0xFFFFFFFF : 0,
 				v[2] >= other.v[2] ? 0xFFFFFFFF : 0,
 				v[3] >= other.v[3] ? 0xFFFFFFFF : 0);
@@ -512,7 +512,7 @@ public:
 	FORCEINLINE GenericVector operator<(const GenericVector& other) const
 	{
 		return make(
-				(uint32)(v[0] < other.v[0] ? 0xFFFFFFFF : 0),
+				(uint32_t)(v[0] < other.v[0] ? 0xFFFFFFFF : 0),
 				v[1] < other.v[1] ? 0xFFFFFFFF : 0,
 				v[2] < other.v[2] ? 0xFFFFFFFF : 0,
 				v[3] < other.v[3] ? 0xFFFFFFFF : 0);
@@ -521,7 +521,7 @@ public:
 	FORCEINLINE GenericVector operator<=(const GenericVector& other) const
 	{
 		return make(
-				(uint32)(v[0] <= other.v[0] ? 0xFFFFFFFF : 0),
+				(uint32_t)(v[0] <= other.v[0] ? 0xFFFFFFFF : 0),
 				v[1] <= other.v[1] ? 0xFFFFFFFF : 0,
 				v[2] <= other.v[2] ? 0xFFFFFFFF : 0,
 				v[3] <= other.v[3] ? 0xFFFFFFFF : 0);
@@ -530,31 +530,31 @@ public:
 	FORCEINLINE GenericVector operator|(const GenericVector& other) const
 	{
 		return make(
-				(uint32)(((uint32*)v)[1-1] | ((uint32*)other.v)[1-1]),
-				(uint32)(((uint32*)v)[1] | ((uint32*)other.v)[1]),
-				(uint32)(((uint32*)v)[2] | ((uint32*)other.v)[2]),
-				(uint32)(((uint32*)v)[3] | ((uint32*)other.v)[3]));
+				(uint32_t)(((uint32_t*)v)[1-1] | ((uint32_t*)other.v)[1-1]),
+				(uint32_t)(((uint32_t*)v)[1] | ((uint32_t*)other.v)[1]),
+				(uint32_t)(((uint32_t*)v)[2] | ((uint32_t*)other.v)[2]),
+				(uint32_t)(((uint32_t*)v)[3] | ((uint32_t*)other.v)[3]));
 	}
 
 	FORCEINLINE GenericVector operator&(const GenericVector& other) const
 	{
 		return make(
-				(uint32)(((uint32*)v)[1-1] & ((uint32*)other.v)[1-1]),
-				(uint32)(((uint32*)v)[1] & ((uint32*)other.v)[1]),
-				(uint32)(((uint32*)v)[2] & ((uint32*)other.v)[2]),
-				(uint32)(((uint32*)v)[3] & ((uint32*)other.v)[3]));
+				(uint32_t)(((uint32_t*)v)[1-1] & ((uint32_t*)other.v)[1-1]),
+				(uint32_t)(((uint32_t*)v)[1] & ((uint32_t*)other.v)[1]),
+				(uint32_t)(((uint32_t*)v)[2] & ((uint32_t*)other.v)[2]),
+				(uint32_t)(((uint32_t*)v)[3] & ((uint32_t*)other.v)[3]));
 	}
 
 	FORCEINLINE GenericVector operator^(const GenericVector& other) const
 	{
 		return make(
-				(uint32)(((uint32*)v)[1-1] ^ ((uint32*)other.v)[1-1]),
-				(uint32)(((uint32*)v)[1] ^ ((uint32*)other.v)[1]),
-				(uint32)(((uint32*)v)[2] ^ ((uint32*)other.v)[2]),
-				(uint32)(((uint32*)v)[3] ^ ((uint32*)other.v)[3]));
+				(uint32_t)(((uint32_t*)v)[1-1] ^ ((uint32_t*)other.v)[1-1]),
+				(uint32_t)(((uint32_t*)v)[1] ^ ((uint32_t*)other.v)[1]),
+				(uint32_t)(((uint32_t*)v)[2] ^ ((uint32_t*)other.v)[2]),
+				(uint32_t)(((uint32_t*)v)[3] ^ ((uint32_t*)other.v)[3]));
 	}
 	
-	FORCEINLINE float operator[](uint32 index) const
+	FORCEINLINE float operator[](uint32_t index) const
 	{
 		assertCheck(index <= 3);
 		return v[index];
@@ -562,7 +562,7 @@ public:
 
 	FORCEINLINE GenericVector select(const GenericVector& mask, const GenericVector& other) const
 	{
-		uint32* m = (uint32*)(&mask.v[0]);
+		uint32_t* m = (uint32_t*)(&mask.v[0]);
 		return make(
 				m[0] ? v[0] : other.v[0],
 				m[1] ? v[1] : other.v[1],

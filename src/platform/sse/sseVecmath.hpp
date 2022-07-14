@@ -52,7 +52,7 @@ public:
 	static FORCEINLINE float matrixDeterminant3x3Vector(const SSEVector* m)
 	{
 		float M[4][4];
-		for(uint32 i = 0; i < 4; i++) {
+		for(uint32_t i = 0; i < 4; i++) {
 			m[i].store4f(M[i]);
 		}
 		return 
@@ -72,7 +72,7 @@ public:
 
 		SSEVector* m = (SSEVector*)mat;
 		float M[4][4];
-		for(uint32 i = 0; i < 4; i++) {
+		for(uint32_t i = 0; i < 4; i++) {
 			m[i].store4f(M[i]);
 		}
 
@@ -140,7 +140,7 @@ public:
 	{
 		// NOTE: This can be further vectorized!
 		// NOTE: This may actually be faster without vectorization, but testing is inconclusive.
-		static const SSEVector MASK_W(SSEVector::make((uint32)0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0));
+		static const SSEVector MASK_W(SSEVector::make((uint32_t)0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0));
 		SSEVector rot2 = quatRotation + quatRotation;
 		SSEVector rs12 = quatRotation*rot2;
 		SSEVector rs22;
@@ -167,7 +167,7 @@ public:
 		mat[3] = make(0.0f, 0.0f, 0.0f, 1.0f);
 	}
 	
-	static FORCEINLINE SSEVector make(uint32 x, uint32 y, uint32 z, uint32 w)
+	static FORCEINLINE SSEVector make(uint32_t x, uint32_t y, uint32_t z, uint32_t w)
 	{
 		union { __m128 vecf; __m128i veci; } vecData;
 		vecData.veci = _mm_setr_epi32(x, y, z, w);
@@ -176,13 +176,13 @@ public:
 		return result;
 	}
 
-	static FORCEINLINE const SSEVector mask(uint32 index)
+	static FORCEINLINE const SSEVector mask(uint32_t index)
 	{
 		static const SSEVector masks[4] = {
-			SSEVector::make((uint32)0, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF),
-			SSEVector::make((uint32)0xFFFFFFFF, 0, 0xFFFFFFFF, 0xFFFFFFFF),
-			SSEVector::make((uint32)0xFFFFFFFF, 0xFFFFFFFF, 0, 0xFFFFFFFF),
-			SSEVector::make((uint32)0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0) };
+			SSEVector::make((uint32_t)0, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF),
+			SSEVector::make((uint32_t)0xFFFFFFFF, 0, 0xFFFFFFFF, 0xFFFFFFFF),
+			SSEVector::make((uint32_t)0xFFFFFFFF, 0xFFFFFFFF, 0, 0xFFFFFFFF),
+			SSEVector::make((uint32_t)0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0) };
 		assertCheck(index < 4);
 		return masks[index];
 	}
@@ -255,13 +255,13 @@ public:
 		_mm_stream_ps(result, data);
 	}
 
-	FORCEINLINE SSEVector replicate(uint32 index) const
+	FORCEINLINE SSEVector replicate(uint32_t index) const
 	{
 		assertCheck(index <= 3);
 		return SSEVector::load1f((*this)[index]);
 	}
 
-//	FORCEINLINE SSEVector swizzle(const uint32 x, const uint32 y, const uint32 z, const uint32 w) const
+//	FORCEINLINE SSEVector swizzle(const uint32_t x, const uint32_t y, const uint32_t z, const uint32_t w) const
 //	{
 //		assertCheck(x <= 3);
 //		assertCheck(y <= 3);
@@ -276,7 +276,7 @@ public:
 	FORCEINLINE SSEVector abs() const
 	{
 		static const SSEVector sign_mask(
-			SSEVector::make((uint32)0x7FFFFFFF, 0x7FFFFFFF, 0x7FFFFFFF, 0x7FFFFFFF));
+			SSEVector::make((uint32_t)0x7FFFFFFF, 0x7FFFFFFF, 0x7FFFFFFF, 0x7FFFFFFF));
 		SSEVector vec;
 		vec.data = _mm_and_ps(data, sign_mask.data);
 		return vec;
@@ -285,7 +285,7 @@ public:
 	FORCEINLINE SSEVector sign() const
 	{
 		static const SSEVector sign_mask(
-			SSEVector::make((uint32)0x80000000, 0x80000000, 0x80000000, 0x80000000));
+			SSEVector::make((uint32_t)0x80000000, 0x80000000, 0x80000000, 0x80000000));
 		SSEVector vec;
 		vec.data = _mm_and_ps(data, sign_mask.data);
 		return vec;
@@ -545,7 +545,7 @@ public:
 		return vec;
 	}
 	
-	FORCEINLINE float operator[](uint32 index) const
+	FORCEINLINE float operator[](uint32_t index) const
 	{
 		assertCheck(index <= 3);
 		return ((float*)&data)[index];

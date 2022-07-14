@@ -10,7 +10,7 @@ public:
 	FORCEINLINE Quaternion(float x, float y, float z, float w);
 	FORCEINLINE Quaternion(const Vector3f& axis, float angle);
 	
-	FORCEINLINE float operator[](uint32 index) const;
+	FORCEINLINE float operator[](uint32_t index) const;
 	FORCEINLINE Quaternion operator+(const Quaternion& other) const;
 	FORCEINLINE Quaternion operator+=(const Quaternion& other);
 	FORCEINLINE Quaternion operator-(const Quaternion& other) const;
@@ -81,7 +81,7 @@ FORCEINLINE Quaternion::Quaternion(const Vector3f& axis, float angle)
 			cosAngle);
 }
 
-FORCEINLINE float Quaternion::operator[](uint32 index) const
+FORCEINLINE float Quaternion::operator[](uint32_t index) const
 {
 	return vec[index];
 }

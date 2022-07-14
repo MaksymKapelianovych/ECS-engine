@@ -39,6 +39,7 @@ static int runApp(Application* app)
 #endif
 int main(int argc, char** argv)
 {
+	SDL_SetMainReady();
 	Application* app = Application::create();
 	int result = runApp(app);
 	delete app;

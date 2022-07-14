@@ -6,7 +6,7 @@
 struct SDLTiming
 {
 	static double getTime();
-	static void sleep(uint32 milliseconds);
+	static void sleep(uint32_t milliseconds);
 };
 
 #endif

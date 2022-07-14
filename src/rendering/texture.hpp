@@ -15,8 +15,8 @@ public:
 				texData.getHeight(), texData.getPixelArray(),
 				RenderDevice::FORMAT_RGBA,
 				internalPixelFormat, generateMipmaps, shouldCompress)),
-		width((uint32)texData.getWidth()),
-		height((uint32)texData.getHeight()),
+		width((uint32_t)texData.getWidth()),
+		height((uint32_t)texData.getHeight()),
    		compressed(shouldCompress),
 		mipmaps(generateMipmaps) {}
 
@@ -35,33 +35,33 @@ public:
 		texId = device->releaseTexture2D(texId);
 	}
 
-	inline uint32 getId();
-	inline uint32 getWidth() const;
-	inline uint32 getHeight() const;
+	inline uint32_t getId();
+	inline uint32_t getWidth() const;
+	inline uint32_t getHeight() const;
 	inline bool isCompressed() const;
 	inline bool hasMipmaps() const;
 private:
 	RenderDevice* device;
-	uint32 texId;
-	uint32 width;
-	uint32 height;
+	uint32_t texId;
+	uint32_t width;
+	uint32_t height;
 	bool compressed;
 	bool mipmaps;
 
 	NULL_COPY_AND_ASSIGN(Texture);
 };
 
-inline uint32 Texture::getId()
+inline uint32_t Texture::getId()
 {
 	return texId;
 }
 
-inline uint32 Texture::getWidth() const
+inline uint32_t Texture::getWidth() const
 {
 	return width;
 }
 
-inline uint32 Texture::getHeight() const
+inline uint32_t Texture::getHeight() const
 {
 	return height;
 }

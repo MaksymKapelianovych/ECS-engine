@@ -16,30 +16,30 @@ public:
 		deviceId = device->releaseVertexArray(deviceId);
 	}
 
-	inline void updateBuffer(uint32 bufferIndex, const void* data, uintptr dataSize);
+	inline void updateBuffer(uint32_t bufferIndex, const void* data, uintptr_t dataSize);
 
-	inline uint32 getId();
-	inline uint32 getNumIndices();
+	inline uint32_t getId();
+	inline uint32_t getNumIndices();
 private:
 	RenderDevice* device;
-	uint32 deviceId;
-	uint32 numIndices;
+	uint32_t deviceId;
+	uint32_t numIndices;
 
 	NULL_COPY_AND_ASSIGN(VertexArray);
 };
 
-inline uint32 VertexArray::getId()
+inline uint32_t VertexArray::getId()
 {
 	return deviceId;
 }
 
-inline uint32 VertexArray::getNumIndices()
+inline uint32_t VertexArray::getNumIndices()
 {
 	return numIndices;
 }
 
-inline void VertexArray::updateBuffer(uint32 bufferIndex,
-		const void* data, uintptr dataSize)
+inline void VertexArray::updateBuffer(uint32_t bufferIndex,
+		const void* data, uintptr_t dataSize)
 {
 	return device->updateVertexArrayBuffer(deviceId, bufferIndex, data, dataSize);
 }

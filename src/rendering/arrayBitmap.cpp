@@ -2,49 +2,49 @@
 #include "core/memory.hpp"
 #include "staticLibs/stb_image.h"
 
-ArrayBitmap::ArrayBitmap(int32 widthIn, int32 heightIn) :
+ArrayBitmap::ArrayBitmap(int32_t widthIn, int32_t heightIn) :
 	width(widthIn), height(heightIn)
 {
 	assertCheck(width > 0 && height > 0);
-	pixels = (int32*)Memory::malloc(getPixelsSize());
+	pixels = (int32_t*)Memory::malloc(getPixelsSize());
 }
 
-ArrayBitmap::ArrayBitmap(int32 widthIn, int32 heightIn, int32* pixelsIn) :
+ArrayBitmap::ArrayBitmap(int32_t widthIn, int32_t heightIn, int32_t* pixelsIn) :
 	width(widthIn), height(heightIn)
 {
 	assertCheck(width > 0 && height > 0);
 	assertCheck(pixelsIn != nullptr);
-	uintptr size = getPixelsSize();
-	pixels = (int32*)Memory::malloc(size);
+	uintptr_t size = getPixelsSize();
+	pixels = (int32_t*)Memory::malloc(size);
 	Memory::memcpy(pixels, pixelsIn, size);
 }
 
-ArrayBitmap::ArrayBitmap(int32 widthIn, int32 heightIn, int32* pixelsIn, int32 offsetX,
-		int32 offsetY, int32 rowOffset) :
+ArrayBitmap::ArrayBitmap(int32_t widthIn, int32_t heightIn, int32_t* pixelsIn, int32_t offsetX,
+		int32_t offsetY, int32_t rowOffset) :
 	width(widthIn), height(heightIn)
 {
 	assertCheck(width > 0 && height > 0);
 	assertCheck(pixelsIn != nullptr);
 	assertCheck(offsetX > 0 && offsetY > 0 && rowOffset > 0);
-	uintptr size = getPixelsSize();
-	pixels = (int32*)Memory::malloc(size);
-	int32* pixelsSrc = pixelsIn + offsetY + offsetX * rowOffset;
+	uintptr_t size = getPixelsSize();
+	pixels = (int32_t*)Memory::malloc(size);
+	int32_t* pixelsSrc = pixelsIn + offsetY + offsetX * rowOffset;
 
-	for(uintptr i = 0; i < (uintptr)height;
+	for(uintptr_t i = 0; i < (uintptr_t)height;
 			++i, pixels += width, pixelsSrc += rowOffset) {
-		Memory::memcpy(pixels, pixelsSrc, (uintptr)width);
+		Memory::memcpy(pixels, pixelsSrc, (uintptr_t)width);
 	}
 }
 
 ArrayBitmap::~ArrayBitmap()
 {
-	pixels = (int32*)Memory::free(pixels);
+	pixels = (int32_t*)Memory::free(pixels);
 }
 
 bool ArrayBitmap::load(const String& fileName)
 {
-	int32 texWidth, texHeight, bytesPerPixel;
-	uint8* data = stbi_load(fileName.c_str(), &texWidth, &texHeight,
+	int32_t texWidth, texHeight, bytesPerPixel;
+	uint8_t* data = stbi_load(fileName.c_str(), &texWidth, &texHeight,
 			&bytesPerPixel, 4);
 	if(data == nullptr) {
 		return false;
@@ -55,8 +55,8 @@ bool ArrayBitmap::load(const String& fileName)
 	} else {
 		width = texWidth;
 		height = texHeight;
-		pixels = (int32*)Memory::free(pixels);
-		pixels = (int32*)Memory::malloc(getPixelsSize());
+		pixels = (int32_t*)Memory::free(pixels);
+		pixels = (int32_t*)Memory::malloc(getPixelsSize());
 		Memory::memcpy(pixels, data, getPixelsSize());
 	}
 
@@ -70,7 +70,7 @@ bool ArrayBitmap::save(const String& fileName) const
 	return false;
 }
 
-void ArrayBitmap::clear(int32 color)
+void ArrayBitmap::clear(int32_t color)
 {
 	Memory::memset(pixels, color, getPixelsSize());
 }

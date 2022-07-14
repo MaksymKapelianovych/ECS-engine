@@ -6,7 +6,7 @@ Quaternion Matrix::getRotation() const
 	float m[4][4];
 	Matrix temp(*this);
 	temp.removeScale();
-	for(uint32 i = 0; i < 4; i++) {
+	for(uint32_t i = 0; i < 4; i++) {
 		temp.m[i].store4f(m[i]);
 	}
 	float trace = m[0][0] + m[1][1] + m[2][2];

@@ -22,14 +22,14 @@ bool DDSTexture::load(const char* fileName) {
 
 	// Read header
 	fread(&header, ARRAY_SIZE_IN_ELEMENTS(header), 1, fp); 
-	height      = *(uint32*)&(header[8 ]);
-	width       = *(uint32*)&(header[12]);
-	uint32 linearSize  = *(uint32*)&(header[16]);
-	mipMapCount = *(uint32*)&(header[24]);
-	fourCC      = *(uint32*)&(header[80]);
+	height      = *(uint32_t*)&(header[8 ]);
+	width       = *(uint32_t*)&(header[12]);
+	uint32_t linearSize  = *(uint32_t*)&(header[16]);
+	mipMapCount = *(uint32_t*)&(header[24]);
+	fourCC      = *(uint32_t*)&(header[80]);
 
 	// Allocate memory for DDS file
-	uint32 bufsize = mipMapCount > 1 ? linearSize * 2 : linearSize;
+	uint32_t bufsize = mipMapCount > 1 ? linearSize * 2 : linearSize;
 	cleanup();
 	buffer = (unsigned char*)Memory::malloc(bufsize * sizeof(unsigned char));
 	fread(buffer, 1, bufsize, fp);

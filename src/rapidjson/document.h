@@ -497,8 +497,8 @@ struct TypeHelper<ValueType, std::basic_string<typename ValueType::Ch> > {
 #endif
 
 template<typename ValueType> 
-struct TypeHelper<ValueType, typename ValueType::Array> {
-    typedef typename ValueType::Array ArrayType;
+struct TypeHelper<ValueType, typename ValueType::Vector> {
+    typedef typename ValueType::Vector ArrayType;
     static bool Is(const ValueType& v) { return v.IsArray(); }
     static ArrayType Get(ValueType& v) { return v.GetArray(); }
     static ValueType& Set(ValueType& v, ArrayType data) { return v = data; }

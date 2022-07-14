@@ -21,7 +21,7 @@ bool Vector3f::equals(float val, float errorMargin) const
 }
 
 
-float Vector3f::operator[](uint32 index) const
+float Vector3f::operator[](uint32_t index) const
 {
 	assertCheck(index < 3);
 	return vec[index];
@@ -33,7 +33,7 @@ void Vector3f::set(float x, float y, float z)
 	vec = Vector::make(x, y, z, 0.0f);
 }
 
-void Vector3f::set(uint32 index, float val)
+void Vector3f::set(uint32_t index, float val)
 {
 	vec = vec.select(Vector::mask(index), Vector::load1f(val));
 }
@@ -196,7 +196,7 @@ bool Vector2f::equals(float val, float errorMargin) const
 		(vals[1] - val) < errorMargin;
 }
 
-float Vector2f::operator[](uint32 index) const
+float Vector2f::operator[](uint32_t index) const
 {
 	assertCheck(index < 2);
 	return vals[index];
@@ -208,7 +208,7 @@ void Vector2f::set(float x, float y)
 	vals[1] = y;
 }
 
-void Vector2f::set(uint32 index, float val)
+void Vector2f::set(uint32_t index, float val)
 {
 	assertCheck(index < 2);
 	vals[index] = val;

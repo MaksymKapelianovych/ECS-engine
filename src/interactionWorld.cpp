@@ -11,7 +11,7 @@ void InteractionWorld::onRemoveEntity(EntityHandle handle)
 	entitiesToRemove.push_back(handle);
 }
 
-void InteractionWorld::onAddComponent(EntityHandle handle, uint32 id)
+void InteractionWorld::onAddComponent(EntityHandle handle, uint32_t id)
 {
 	if(id == TransformComponent::ID) {
 		if(ecs.getComponent<ColliderComponent>(handle) != nullptr) {
@@ -27,7 +27,7 @@ void InteractionWorld::onAddComponent(EntityHandle handle, uint32 id)
 	}
 }
 
-void InteractionWorld::onRemoveComponent(EntityHandle handle, uint32 id)
+void InteractionWorld::onRemoveComponent(EntityHandle handle, uint32_t id)
 {
 	if(id == TransformComponent::ID || id == ColliderComponent::ID) {
 		entitiesToRemove.push_back(handle);
@@ -55,7 +55,7 @@ void InteractionWorld::addInteraction(Interaction* interaction) {
 	}
 }
 
-void InteractionWorld::computeInteractions(EntityInternal& entity, uint32 interactionIndex)
+void InteractionWorld::computeInteractions(EntityInternal& entity, uint32_t interactionIndex)
 {
 	Interaction* interaction = interactions[interactionIndex];
 	bool isInteractor = true;
@@ -113,7 +113,7 @@ void InteractionWorld::processInteractions(float delta)
 				for(size_t dummyIndex = 0; dummyIndex < 2; dummyIndex++) {
 					for(size_t k = 0; k < entities[interactorIndex].interactors.size(); k++) {
 						for(size_t l = 0; l < entities[interacteeIndex].interactees.size(); l++) {
-							uint32 index = entities[interactorIndex].interactors[k];
+							uint32_t index = entities[interactorIndex].interactors[k];
 							if(index == entities[interacteeIndex].interactees[l]) {
 								Interaction* interaction = interactions[index];
 								interactorComponents.resize(Math::max(interactorComponents.size(), interaction->getInteractorComponents().size()));
@@ -142,7 +142,7 @@ void InteractionWorld::processInteractions(float delta)
 	centerSqSum /= entities.size();
 	Vector3f variance = centerSqSum - (centerSum*centerSum);
 	float maxVar = variance[0];
-	uint32 maxVarAxis = 0;
+	uint32_t maxVarAxis = 0;
 	if(variance[1] > maxVar) {
 		maxVar = variance[1];
 		maxVarAxis = 1;

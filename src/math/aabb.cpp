@@ -1,6 +1,6 @@
 #include "aabb.hpp"
 
-AABB::AABB(Vector3f* points, uint32 amt)
+AABB::AABB(Vector3f* points, uint32_t amt)
 {
 	if(amt == 0) {
 		extents[0] = Vector3f(0.0f,0.0f,0.0f);
@@ -9,13 +9,13 @@ AABB::AABB(Vector3f* points, uint32 amt)
 	}
 	extents[0] = points[0];
 	extents[1] = points[0];
-	for(uint32 i = 1; i < amt; i++) {
+	for(uint32_t i = 1; i < amt; i++) {
 		extents[0] = extents[0].min(points[i]);
 		extents[1] = extents[1].max(points[i]);
 	}
 }
 
-AABB::AABB(float* points, uint32 amt, uint32 stride)
+AABB::AABB(float* points, uint32_t amt, uint32_t stride)
 {
 	if(amt == 0) {
 		extents[0] = Vector3f(0.0f,0.0f,0.0f);
@@ -25,9 +25,9 @@ AABB::AABB(float* points, uint32 amt, uint32 stride)
 	Vector3f initialPoint(points[0],points[1],points[2]);
 	extents[0] = initialPoint;
 	extents[1] = initialPoint;
-	uintptr index = 3;
+	uintptr_t index = 3;
 	stride += 3;
-	for(uint32 i = 1; i < amt; i++) {
+	for(uint32_t i = 1; i < amt; i++) {
 		Vector3f point(points[index],points[index+1],points[index+2]);
 		extents[0] = extents[0].min(point);
 		extents[1] = extents[1].max(point);
@@ -67,7 +67,7 @@ AABB AABB::transform(const Matrix& transform) const
 //	Vector extents(getExtents().toVector(0.0f));
 //	Vector absExtents = extents.abs();
 //	Matrix absMatrix(transform);
-//	for(uint32 i = 0; i < 4; i++) {
+//	for(uint32_t i = 0; i < 4; i++) {
 //		absMatrix[i]=absMatrix[i].abs();
 //	}
 //

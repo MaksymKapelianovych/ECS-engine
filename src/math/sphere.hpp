@@ -9,8 +9,8 @@ public:
 	FORCEINLINE Sphere() {}
 	FORCEINLINE Sphere(const Vector3f& center, float radius) :
 		data(center.toVector(radius)) {}
-	Sphere(Vector3f* points, uint32 amt);
-	Sphere(float* points, uint32 amt);
+	Sphere(Vector3f* points, uint32_t amt);
+	Sphere(float* points, uint32_t amt);
 
 	bool intersectRay(const Vector3f& start, const Vector3f& rayDir, float& point1, float& point2) const;
 	bool intersectLine(const Vector3f& start, const Vector3f& end) const;

@@ -2,28 +2,29 @@
 
 #include "ecs/ecs.hpp"
 #include "gameCS/utilComponents.hpp"
+#include "gameCS/collision.h"
 
 class Interaction
 {
 public:
 	virtual void interact(float delta, BaseECSComponent** interactorComponents, BaseECSComponent** interacteeComponents) {}
 
-	const Array<uint32>& getInteractorComponents() {
+	const Array<uint32_t>& getInteractorComponents() {
 		return interactorComponentTypes;
 	}
-	const Array<uint32>& getInteracteeComponents() {
+	const Array<uint32_t>& getInteracteeComponents() {
 		return interacteeComponentTypes;
 	}
 protected:
-	void addInteractorComponentType(uint32 type) {
+	void addInteractorComponentType(uint32_t type) {
 		interactorComponentTypes.push_back(type);
 	}
-	void addInteracteeComponentType(uint32 type) {
+	void addInteracteeComponentType(uint32_t type) {
 		interacteeComponentTypes.push_back(type);
 	}
 private:
-	Array<uint32> interactorComponentTypes;
-	Array<uint32> interacteeComponentTypes;
+	Array<uint32_t> interactorComponentTypes;
+	Array<uint32_t> interacteeComponentTypes;
 };
 
 class InteractionWorld : public ECSListener
@@ -37,8 +38,8 @@ public:
 	}
 	virtual void onMakeEntity(EntityHandle handle);
 	virtual void onRemoveEntity(EntityHandle handle);
-	virtual void onAddComponent(EntityHandle handle, uint32 id);
-	virtual void onRemoveComponent(EntityHandle handle, uint32 id);
+	virtual void onAddComponent(EntityHandle handle, uint32_t id);
+	virtual void onRemoveComponent(EntityHandle handle, uint32_t id);
 
 	void processInteractions(float delta);
 
@@ -46,15 +47,15 @@ public:
 private:
 	struct EntityInternal {
 		EntityHandle handle;
-		Array<uint32> interactors;
-		Array<uint32> interactees;
+		Array<uint32_t> interactors;
+		Array<uint32_t> interactees;
 	};
 
 	struct InteractionWorldCompare {
-		uint32 axis;
+		uint32_t axis;
 		ECS& ecs;
 
-		InteractionWorldCompare(ECS& ecsIn, uint32 axisIn) :
+		InteractionWorldCompare(ECS& ecsIn, uint32_t axisIn) :
 			axis(axisIn), ecs(ecsIn) {}
 		bool operator()(EntityInternal& a, EntityInternal& b) {
 			float aMin = ecs.getComponent<ColliderComponent>(a.handle)->transformedAABB.getMinExtents()[axis];
@@ -73,5 +74,5 @@ private:
 	void removeAndUpdateEntities();
 	void addEntity(EntityHandle handle);
 
-	void computeInteractions(EntityInternal& entity, uint32 interactionIndex);
+	void computeInteractions(EntityInternal& entity, uint32_t interactionIndex);
 };

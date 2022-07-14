@@ -9,10 +9,3 @@ struct TransformComponent : public ECSComponent<TransformComponent>
 	Transform transform;
 };
 
-struct ColliderComponent : public ECSComponent<ColliderComponent>
-{
-	AABB aabb;
-	AABB transformedAABB;
-};
-
-

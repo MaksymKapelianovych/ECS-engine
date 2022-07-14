@@ -18,7 +18,7 @@ public:
 	FORCEINLINE Color(float red, float green, float blue, float alpha=1.0f);
 	FORCEINLINE Color(const Vector& colorVector);
 
-	FORCEINLINE float operator[](uint32 index) const;
+	FORCEINLINE float operator[](uint32_t index) const;
 	FORCEINLINE Color operator-() const;
 	FORCEINLINE Color operator+(const Color& other) const;
 	FORCEINLINE Color operator+=(const Color& other);
@@ -34,7 +34,7 @@ public:
 
 	FORCEINLINE float getLuminance() const;
 	FORCEINLINE Color quantized() const;
-	FORCEINLINE int32 toInt() const;
+	FORCEINLINE int32_t toInt() const;
 
 	FORCEINLINE Color contrastAdjust(float contrast) const;
 	FORCEINLINE Color saturationAdjust(float saturation) const;
@@ -51,7 +51,7 @@ FORCEINLINE Color::Color(float red, float green, float blue, float alpha) :
 FORCEINLINE Color::Color(const Vector& colorVector) :
 	data(colorVector) {}
 
-FORCEINLINE float Color::operator[](uint32 index) const
+FORCEINLINE float Color::operator[](uint32_t index) const
 {
 	return data[index];
 }
@@ -132,24 +132,24 @@ FORCEINLINE Color Color::quantized() const
 	float vals[4];
 	Vector conversionAmt(Vector::load1f(255.0f));
 	(data * conversionAmt).store4f(vals);
-	for(uint32 i = 0; i < 4; i++) {
+	for(uint32_t i = 0; i < 4; i++) {
 		vals[i] = Math::clamp(vals[i], 0.0f, 255.0f);
 		vals[i] = Math::roundToFloat(vals[i]);
 	}
 	return Color(Vector::load4f(vals) / conversionAmt);
 }
 
-FORCEINLINE int32 Color::toInt() const
+FORCEINLINE int32_t Color::toInt() const
 {
 	float vals[4];
 	Vector conversionAmt(Vector::load1f(255.0f));
 	(data * conversionAmt).store4f(vals);
-	uint32 result = 0;
-	for(uint32 i = 0; i < 4; i++) {
+	uint32_t result = 0;
+	for(uint32_t i = 0; i < 4; i++) {
 		vals[i] = Math::clamp(vals[i], 0.0f, 255.0f);
-		result = (result << 8) | (uint32)Math::roundToInt(vals[i]);
+		result = (result << 8) | (uint32_t)Math::roundToInt(vals[i]);
 	}
-	return (int32)result;
+	return (int32_t)result;
 }
 
 

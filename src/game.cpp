@@ -8,6 +8,8 @@
 #include "gameCS/movementControl.hpp"
 #include "gameCS/motion.hpp"
 #include "gameCS/megaCube.hpp"
+#include "gameCS/collision.h"
+
 
 class TestInteraction : public Interaction
 {
@@ -29,15 +31,15 @@ public:
 
 		motionComponent->velocity = motionComponent->velocity * -1.1f;
 
-//		transform.setRotation((transform.getRotation()*Quaternion(Vector3f(0.0f,0.0f,1.0f), delta)).normalized());
-//		DEBUG_LOG_TEMP2("Interacting!!");
+		transform.setRotation((transform.getRotation()*Quaternion(Vector3f(0.0f,0.0f,1.0f), delta)).normalized());
+		DEBUG_LOG_TEMP2("Interacting!!");
 	}
 };
 
 void Game::gameLoop()
 {
 	Color color(0.0f, 0.15f, 0.3f);
-	uint32 fps = 0;
+	uint32_t fps = 0;
 	double lastTime = Time::getTime();
 	double fpsTimeCounter = 0.0;
 	double updateTimer = 1.0;
@@ -82,7 +84,7 @@ int Game::loadAndRunScene(RenderDevice& device)
 {
 	// Begin scene creation
 	Array<IndexedModel> models;
-	Array<uint32> modelMaterialIndices;
+	Array<uint32_t> modelMaterialIndices;
 	Array<MaterialSpec> modelMaterials;
 	ModelLoader::loadModels("./res/models/monkey3.obj", models,
 			modelMaterialIndices, modelMaterials);
@@ -146,7 +148,7 @@ int Game::loadAndRunScene(RenderDevice& device)
 	colliderComponent.aabb = vertexArrayAABB;
 
 	TransformComponent transformComponent;
-	transformComponent.transform.setTranslation(Vector3f(0.0f, 0.0f, 20.0f));
+	transformComponent.transform.setTranslation(Vector3f(-10.0f, -10.0f, 20.0f));
 
 	MovementControlComponent movementControl;
 	movementControl.movementControls.push_back(MovementControl(Vector3f(1.0f,0.0f,0.0f) * 30.0f, &horizontal));
@@ -160,7 +162,7 @@ int Game::loadAndRunScene(RenderDevice& device)
 	MegaCubeComponent megaCubeComp;
 	// Create entities
 	ecs.makeEntity(transformComponent, movementControl, motionComponent, renderableMesh, colliderComponent);
-	for(uint32 i = 0; i < 1; i++) {
+	for(uint32_t i = 0; i < 1000; i++) {
 		transformComponent.transform.setTranslation(Vector3f(Math::randf()*10.0f-5.0f, Math::randf()*10.0f-5.0f, 20.0f));
 					//Math::randf()*10.0f-5.0f + 20.0f));
 		renderableMesh.vertexArray = &tinyCubeVertexArray;
@@ -169,16 +171,16 @@ int Game::loadAndRunScene(RenderDevice& device)
 		
 		float vf = -4.0f;
 		float af = 5.0f;
-//		motionComponent.acceleration = Vector3f(Math::randf(-af, af), Math::randf(-af, af), Math::randf(-af, af));
-//		motionComponent.velocity = motionComponent.acceleration * vf;
-//		for(uint32 i = 0; i < 3; i++) {
+		// motionComponent.acceleration = Vector3f(Math::randf(-af, af), Math::randf(-af, af), Math::randf(-af, af));
+		// motionComponent.velocity = motionComponent.acceleration * vf;
+//		for(uint32_t i = 0; i < 3; i++) {
 //			megaCubeComp.pos[i] = transformComponent.transform.getTranslation()[i];
 //			megaCubeComp.vel[i] = motionComponent.velocity[i];
 //			megaCubeComp.acc[i] = motionComponent.acceleration[i];
 //			megaCubeComp.texIndex = Math::randf() > 0.5f ? 0 : 1;
 //		}
 		//ecs.makeEntity(megaCubeComp);
-		ecs.makeEntity(transformComponent, renderableMesh, motionComponent, colliderComponent);
+		ecs.makeEntity(transformComponent, renderableMesh, motionComponent/*, colliderComponent*/);
 	}
 	
 	// Create the systems

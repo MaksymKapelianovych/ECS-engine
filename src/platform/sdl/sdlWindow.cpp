@@ -3,7 +3,7 @@
 #include <stdexcept>
 
 SDLWindow::SDLWindow(const Application& app,
-		int32 widthIn, int32 heightIn, const String& title) :
+		int32_t widthIn, int32_t heightIn, const String& title) :
 	width(widthIn),
 	height(heightIn)
 {
@@ -24,7 +24,7 @@ WindowHandle SDLWindow::getWindowHandle()
 	return window;
 }
 
-void SDLWindow::changeSize(int32 width, int32 height)
+void SDLWindow::changeSize(int32_t width, int32_t height)
 {
 	// TODO: Implement
 }
@@ -34,12 +34,12 @@ void SDLWindow::present()
 	SDL_GL_SwapWindow(window);
 }
 
-int32 SDLWindow::getWidth() const
+int32_t SDLWindow::getWidth() const
 {
 	return width;
 }
 
-int32 SDLWindow::getHeight() const
+int32_t SDLWindow::getHeight() const
 {
 	return height;
 }

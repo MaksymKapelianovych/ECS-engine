@@ -13,7 +13,7 @@ public:
 	virtual bool isRunning();
 private:
 	bool isAppRunning;
-	static uint32 numInstances;
+	static uint32_t numInstances;
 
 	SDLApplication();
 };
