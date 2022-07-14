@@ -28,11 +28,11 @@ void GameEventHandler::onMouseMove(int32_t mousePosX, int32_t mousePosY,
 
 void GameEventHandler::addKeyControl(uint32_t keyCode, InputControl& inputControl, float weight)
 {
-	inputs[keyCode].push_back(std::pair<float, InputControl&>(weight, inputControl));
+	inputs[keyCode].emplace_back(weight, inputControl);
 }
 void GameEventHandler::addMouseControl(uint32_t mouseButton, InputControl& inputControl, float weight)
 {
-	inputs[mouseButton+MOUSE_OFFSET].push_back(std::pair<float, InputControl&>(weight, inputControl));
+	inputs[mouseButton+MOUSE_OFFSET].emplace_back(weight, inputControl);
 }
 
 void GameEventHandler::updateInput(uint32_t inputCode, float dir, bool isRepeat)
@@ -41,7 +41,8 @@ void GameEventHandler::updateInput(uint32_t inputCode, float dir, bool isRepeat)
 		return;
 	}
 
-	for(uint32_t i = 0; i < inputs[inputCode].size(); i++) {
-		inputs[inputCode][i].second.addAmt(inputs[inputCode][i].first * dir);
+	for (auto& input : inputs[inputCode])
+	{
+		input.second.addAmt(input.first * dir);
 	}
 }
