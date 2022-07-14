@@ -17,10 +17,10 @@ inline InputControl::InputControl() :
 
 inline void InputControl::addAmt(float amtToAdd)
 {
-	amt += amtToAdd;
+	amt = Math::clamp(amt + amtToAdd, -1.f, 1.0f);
 }
 
 inline float InputControl::getAmt() const
 {
-	return Math::clamp(amt, -1.0f, 1.0f);
+	return amt;
 }
