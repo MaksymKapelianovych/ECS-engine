@@ -7,7 +7,7 @@ class InputControl
 public:
 	InputControl();
 	void addAmt(float amtToAdd);
-	float getAmt();
+	float getAmt() const;
 private:
 	float amt;
 };
@@ -20,7 +20,7 @@ inline void InputControl::addAmt(float amtToAdd)
 	amt += amtToAdd;
 }
 
-inline float InputControl::getAmt()
+inline float InputControl::getAmt() const
 {
 	return Math::clamp(amt, -1.0f, 1.0f);
 }

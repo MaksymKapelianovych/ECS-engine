@@ -11,7 +11,7 @@ public:
 	};
 	BaseECSSystem() = default;
 	virtual ~BaseECSSystem() = default;
-	virtual void updateComponents(float delta, BaseECSComponent** components) {}
+	virtual void updateComponents(float delta, BaseECSComponent** components) = 0;
 	const Array<uint32_t>& getComponentTypes()
 	{
 		return componentTypes;
@@ -43,10 +43,10 @@ public:
 		systems.push_back(&system);
 		return true;
 	}
-	inline size_t size() {
+	inline size_t size() const {
 		return systems.size();
 	}
-	inline BaseECSSystem* operator[](uint32_t index) {
+	inline BaseECSSystem* operator[](uint32_t index) const {
 		return systems[index];
 	}
 	bool removeSystem(BaseECSSystem& system);

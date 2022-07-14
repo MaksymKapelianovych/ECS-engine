@@ -8,8 +8,8 @@
 class GameEventHandler : public IApplicationEventHandler
 {
 public:
-	GameEventHandler() {}
-	virtual ~GameEventHandler() {}
+	GameEventHandler() = default;
+	virtual ~GameEventHandler() = default;
 	virtual void onKeyDown(uint32_t keyCode, bool isRepeat);
 	virtual void onKeyUp(uint32_t keyCode, bool isRepeat);
 	virtual void onMouseDown(uint32_t mouseButton, uint8_t numClicks);

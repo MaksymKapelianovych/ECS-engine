@@ -9,12 +9,12 @@ class ECSListener
 public:
 	virtual ~ECSListener() = default;
 	
-	virtual void onMakeEntity(EntityHandle handle) {}
-	virtual void onRemoveEntity(EntityHandle handle) {}
-	virtual void onAddComponent(EntityHandle handle, uint32_t id) {}
-	virtual void onRemoveComponent(EntityHandle handle, uint32_t id) {}
+	virtual void onMakeEntity(EntityHandle handle) = 0;
+	virtual void onRemoveEntity(EntityHandle handle) = 0;
+	virtual void onAddComponent(EntityHandle handle, uint32_t id) = 0;
+	virtual void onRemoveComponent(EntityHandle handle, uint32_t id) = 0;
 
-	const Array<uint32_t>& getComponentIDs() { 
+	const Array<uint32_t>& getComponentIDs() const { 
 		return componentIDs;
 	}
 
@@ -127,7 +127,7 @@ private:
 	Array<std::pair<uint32_t, Array<std::pair<uint32_t, uint32_t> > >* > entities;
 	Array<ECSListener*> listeners;
 
-	inline std::pair<uint32_t, Array<std::pair<uint32_t, uint32_t> > >* handleToRawType(EntityHandle handle)
+	inline static std::pair<uint32_t, Array<std::pair<uint32_t, uint32_t> > >* handleToRawType(EntityHandle handle)
 	{
 		return (std::pair<uint32_t, Array<std::pair<uint32_t, uint32_t> > >*)handle;
 	}

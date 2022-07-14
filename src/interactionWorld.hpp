@@ -9,10 +9,10 @@ class Interaction
 public:
 	virtual void interact(float delta, BaseECSComponent** interactorComponents, BaseECSComponent** interacteeComponents) {}
 
-	const Array<uint32_t>& getInteractorComponents() {
+	const Array<uint32_t>& getInteractorComponents() const {
 		return interactorComponentTypes;
 	}
-	const Array<uint32_t>& getInteracteeComponents() {
+	const Array<uint32_t>& getInteracteeComponents() const {
 		return interacteeComponentTypes;
 	}
 protected:
@@ -57,7 +57,7 @@ private:
 
 		InteractionWorldCompare(ECS& ecsIn, uint32_t axisIn) :
 			axis(axisIn), ecs(ecsIn) {}
-		bool operator()(EntityInternal& a, EntityInternal& b) {
+		bool operator()(EntityInternal& a, EntityInternal& b) const {
 			float aMin = ecs.getComponent<ColliderComponent>(a.handle)->transformedAABB.getMinExtents()[axis];
 			float bMin = ecs.getComponent<ColliderComponent>(b.handle)->transformedAABB.getMinExtents()[axis];
 			return (aMin < bMin);
