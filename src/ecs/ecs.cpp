@@ -111,12 +111,12 @@ void ECS::removeEntity(EntityHandle handle)
 	entities.pop_back();
 }
 
-void ECS::addComponentInternal(EntityHandle handle, Array<std::pair<uint32_t, uint32_t> >& entity, uint32_t componentID, BaseECSComponent* component)
+void ECS::addComponentInternal(EntityHandle handle, Array<std::pair<uint32_t, uint32_t> >& entity, uint32_t componentID, BaseECSComponent* copyFrom)
 {
 	ECSComponentCreateFunction createfn = BaseECSComponent::getTypeCreateFunction(componentID);
 	std::pair<uint32_t, uint32_t> newPair;
 	newPair.first = componentID;
-	newPair.second = createfn(components[componentID], handle, component);
+	newPair.second = createfn(components[componentID], handle, copyFrom);
 	entity.push_back(newPair);
 }
 

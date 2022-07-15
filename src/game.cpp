@@ -19,6 +19,7 @@ public:
 		addInteractorComponentType(TransformComponent::ID);
 		addInteractorComponentType(ColliderComponent::ID);
 		addInteractorComponentType(MotionComponent::ID);
+		
 		addInteracteeComponentType(TransformComponent::ID);
 		addInteracteeComponentType(ColliderComponent::ID);
 		addInteracteeComponentType(MotionComponent::ID);
@@ -157,11 +158,13 @@ int Game::loadAndRunScene(RenderDevice& device)
 	RenderableMeshComponent renderableMesh;
 	renderableMesh.vertexArray = &vertexArray;
 	renderableMesh.texture = &texture;
-
+	
 	MotionComponent motionComponent;
 	MegaCubeComponent megaCubeComp;
 	// Create entities
-	ecs.makeEntity(transformComponent, movementControl, motionComponent, renderableMesh, colliderComponent);
+	EntityHandle handle = ecs.makeEntity(movementControl, renderableMesh, colliderComponent, CollisionTypeComponent{CollisionType::MOVABLE});
+	ecs.addComponent<MotionComponent>(handle);
+	ecs.addComponent<TransformComponent>(handle);
 	for(uint32_t i = 0; i < 1000; i++) {
 		transformComponent.transform.setTranslation(Vector3f(Math::randf()*10.0f-5.0f, Math::randf()*10.0f-5.0f, 20.0f));
 					//Math::randf()*10.0f-5.0f + 20.0f));

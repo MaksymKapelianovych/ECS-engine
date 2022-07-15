@@ -6,7 +6,8 @@
 
 struct BaseECSComponent;
 typedef void* EntityHandle;
-typedef uint32_t (*ECSComponentCreateFunction)(Array<uint8_t>& memory, EntityHandle entity, BaseECSComponent* comp);
+// Create new component as copy of BaseECSComponent* copyFrom
+typedef uint32_t (*ECSComponentCreateFunction)(Array<uint8_t>& memory, EntityHandle entity, BaseECSComponent* copyFrom);
 typedef void (*ECSComponentFreeFunction)(BaseECSComponent* comp);
 #define NULL_ENTITY_HANDLE nullptr
 
@@ -51,11 +52,11 @@ struct ECSComponent : public BaseECSComponent
 };
 
 template<typename Component>
-uint32_t ECSComponentCreate(Array<uint8_t>& memory, EntityHandle entity, BaseECSComponent* comp)
+uint32_t ECSComponentCreate(Array<uint8_t>& memory, EntityHandle entity, BaseECSComponent* copyFrom)
 {
 	uint32_t index = memory.size();
 	memory.resize(index+Component::SIZE);
-	Component* component = new(&memory[index])Component(*(Component*)comp);
+	Component* component = new(&memory[index])Component(*(Component*)copyFrom);
 	component->entity = entity;
 	return index;
 }

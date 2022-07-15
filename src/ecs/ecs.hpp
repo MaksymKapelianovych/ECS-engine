@@ -71,9 +71,29 @@ public:
 
 	// Component methods
 	template<class Component>
-	inline void addComponent(EntityHandle entity, Component* component)
+	inline void addComponent(EntityHandle entity, Component* componentToCopyFrom)
 	{
-		addComponentInternal(entity, handleToEntity(entity), Component::ID, component);
+		addComponentInternal(entity, handleToEntity(entity), Component::ID, componentToCopyFrom);
+		for(uint32_t i = 0; i < listeners.size(); i++) {
+			const Array<uint32_t>& componentIDs = listeners[i]->getComponentIDs();
+			if(listeners[i]->shouldNotifyOnAllComponentOperations()) {
+				listeners[i]->onAddComponent(entity, Component::ID);
+			} else {
+				for(uint32_t j = 0; j < componentIDs.size(); j++) {
+					if(componentIDs[j] == Component::ID) {
+						listeners[i]->onAddComponent(entity, Component::ID);
+						break;
+					}
+				}
+			}
+		}
+	}
+
+	// Component methods
+	template<class Component>
+	inline void addComponent(EntityHandle entity)
+	{
+		addComponentInternal(entity, handleToEntity(entity), Component::ID, Component{});
 		for(uint32_t i = 0; i < listeners.size(); i++) {
 			const Array<uint32_t>& componentIDs = listeners[i]->getComponentIDs();
 			if(listeners[i]->shouldNotifyOnAllComponentOperations()) {
@@ -144,7 +164,11 @@ private:
 
 	void deleteComponent(uint32_t componentID, uint32_t index);
 	bool removeComponentInternal(EntityHandle handle, uint32_t componentID);
-	void addComponentInternal(EntityHandle handle, Array<std::pair<uint32_t, uint32_t> >& entity, uint32_t componentID, BaseECSComponent* component);
+	void addComponentInternal(EntityHandle handle, Array<std::pair<uint32_t, uint32_t> >& entity, uint32_t componentID, BaseECSComponent* copyFrom);
+	void addComponentInternal(EntityHandle handle, Array<std::pair<uint32_t, uint32_t> >& entity, uint32_t componentID, BaseECSComponent& copyFrom)
+	{
+		addComponentInternal(handle, entity, componentID, &copyFrom);
+	}
 	BaseECSComponent* getComponentInternal(Array<std::pair<uint32_t, uint32_t> >& entityComponents, Array<uint8_t>& array, uint32_t componentID);
 
 	void updateSystemWithMultipleComponents(uint32_t index, ECSSystemList& systems, float delta, const Array<uint32_t>& componentTypes,
