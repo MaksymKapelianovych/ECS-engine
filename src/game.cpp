@@ -135,12 +135,13 @@ int Game::loadAndRunScene(RenderDevice& device)
 
 	InputControl horizontal;
 	InputControl vertical;
-	eventHandler.addKeyControl(Input::KEY_A, horizontal, -1.0f);
-	eventHandler.addKeyControl(Input::KEY_D, horizontal, 1.0f);
+	InputControl forward;
+	// eventHandler.addKeyControl(Input::KEY_A, horizontal, -1.0f);
+	// eventHandler.addKeyControl(Input::KEY_D, horizontal, 1.0f);
 	eventHandler.addKeyControl(Input::KEY_LEFT, horizontal, -1.0f);
 	eventHandler.addKeyControl(Input::KEY_RIGHT, horizontal, 1.0f);
-	eventHandler.addKeyControl(Input::KEY_W, vertical, 1.0f);
-	eventHandler.addKeyControl(Input::KEY_S, vertical, -1.0f);
+	eventHandler.addKeyControl(Input::KEY_W, forward, 1.0f);
+	eventHandler.addKeyControl(Input::KEY_S, forward, -1.0f);
 	eventHandler.addKeyControl(Input::KEY_UP, vertical, 1.0f);
 	eventHandler.addKeyControl(Input::KEY_DOWN, vertical, -1.0f);
 
@@ -154,7 +155,8 @@ int Game::loadAndRunScene(RenderDevice& device)
 	MovementControlComponent movementControl;
 	movementControl.movementControls.push_back(MovementControl(Vector3f(1.0f,0.0f,0.0f) * 30.0f, &horizontal));
 	movementControl.movementControls.push_back(MovementControl(Vector3f(0.0f,1.0f,0.0f) * 30.0f, &vertical));
-
+	movementControl.movementControls.push_back(MovementControl(Vector3f(0.0f,0.0f,1.0f) * 30.0f, &forward));
+	
 	RenderableMeshComponent renderableMesh;
 	renderableMesh.vertexArray = &vertexArray;
 	renderableMesh.texture = &texture;
