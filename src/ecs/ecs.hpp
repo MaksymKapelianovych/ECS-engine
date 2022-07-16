@@ -4,6 +4,8 @@
 #include "ecsSystem.hpp"
 #include "dataStructures/map.hpp"
 
+#define LOG_ECS LOG_CATEGORY(ECS)
+
 class ECSListener
 {
 public:
@@ -89,7 +91,6 @@ public:
 		}
 	}
 
-	// Component methods
 	template<class Component>
 	inline void addComponent(EntityHandle entity)
 	{
@@ -138,6 +139,31 @@ public:
 	{
 		return getComponentInternal(handleToEntity(entity), components[componentID], componentID);
 	}
+	
+	template<class Component>
+	bool hasComponent(EntityHandle entityHandle)
+	{
+		return hasComponentInternal(handleToEntity(entityHandle), components[Component::ID], Component::ID);
+	}
+
+	bool hasComponent(EntityHandle entityHandle, uint32_t componentID)
+	{
+		return hasComponentInternal(handleToEntity(entityHandle), components[componentID], componentID);
+	}
+
+	template <class ...Components>
+	bool hasAllComponents(EntityHandle handle)
+	{
+		return hasAllComponents(handle, {Components::ID...});
+	}
+	bool hasAllComponents(EntityHandle handle, Array<uint32_t> componentTypes);
+	
+	template <class ...Components>
+	bool hasAnyComponent(EntityHandle handle)
+	{
+		return hasAnyComponents(handle, {Components::ID...});
+	}
+	bool hasAnyComponent(EntityHandle handle, Array<uint32_t> componentTypes);
 
 	// System methods
 	void updateSystems(ECSSystemList& systems, float delta);
@@ -170,6 +196,10 @@ private:
 		addComponentInternal(handle, entity, componentID, &copyFrom);
 	}
 	BaseECSComponent* getComponentInternal(Array<std::pair<uint32_t, uint32_t> >& entityComponents, Array<uint8_t>& array, uint32_t componentID);
+	bool hasComponentInternal(Array<std::pair<uint32_t, uint32_t> >& entityComponents, Array<uint8_t>& array, uint32_t componentID)
+	{
+		return getComponentInternal(entityComponents, array, componentID) != nullptr;
+	}
 
 	void updateSystemWithMultipleComponents(uint32_t index, ECSSystemList& systems, float delta, const Array<uint32_t>& componentTypes,
 			Array<BaseECSComponent*>& componentParam, Array<Array<uint8_t>*>& componentArrays);

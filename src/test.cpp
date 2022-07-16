@@ -248,11 +248,11 @@ static void testIntersects()
 		Vector3f(0.3f,-0.8f,0.4f),
 		Vector3f(0.3f,-0.8f,-0.4f),
 	};
-	AABB boundingAABB(points, ARRAY_SIZE_IN_ELEMENTS(points));
+	AABB boundingAABB(points, std::size(points));
 	assert(boundingAABB.getMinExtents().equals(Vector3f(0.0f,-1.0f,-1.0f)));
 	assert(boundingAABB.getMaxExtents().equals(Vector3f(1.0f,1.0f,1.0f)));
 
-	Sphere boundingSphere(points, ARRAY_SIZE_IN_ELEMENTS(points));
+	Sphere boundingSphere(points, std::size(points));
 	assert(boundingSphere.getCenter().equals(Vector3f(0.5f,0.0f,0.0f)));
 	assert(Math::equals(boundingSphere.getRadius(), 1.5f, 1.e-4f));
 
@@ -267,11 +267,11 @@ static void testIntersects()
 		0.3f,-0.8f,-0.4f,
 	};
 
-	boundingAABB = AABB(points2, ARRAY_SIZE_IN_ELEMENTS(points2)/3);
+	boundingAABB = AABB(points2, std::size(points2)/3);
 	assert(boundingAABB.getMinExtents().equals(Vector3f(0.0f,-1.0f,-1.0f)));
 	assert(boundingAABB.getMaxExtents().equals(Vector3f(1.0f,1.0f,1.0f)));
 
-	boundingSphere = Sphere(points2, ARRAY_SIZE_IN_ELEMENTS(points2)/3);
+	boundingSphere = Sphere(points2, std::size(points2)/3);
 	assert(boundingSphere.getCenter().equals(Vector3f(0.5f,0.0f,0.0f)));
 	assert(Math::equals(boundingSphere.getRadius(), 1.5f, 1.e-4f));
 }

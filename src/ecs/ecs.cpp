@@ -1,4 +1,7 @@
 #include "ecs.hpp"
+
+#include <algorithm>
+
 #include "core/memory.hpp"
 #include "math/math.hpp"
 
@@ -183,6 +186,24 @@ BaseECSComponent* ECS::getComponentInternal(Array<std::pair<uint32_t, uint32_t> 
 		}
 	}
 	return nullptr;
+}
+
+bool ECS::hasAllComponents(EntityHandle handle, Array<uint32_t> componentTypes)
+{
+	return std::all_of(componentTypes.begin(), componentTypes.end(),
+		[&handle, this](uint32_t componentType)
+		{
+			return hasComponent(handle, componentType);
+		});
+}
+
+bool ECS::hasAnyComponent(EntityHandle handle, Array<uint32_t> componentTypes)
+{
+	return std::any_of(componentTypes.begin(), componentTypes.end(),
+		[&handle, this](uint32_t componentType)
+		{
+			return hasComponent(handle, componentType);
+		});
 }
 
 void ECS::updateSystems(ECSSystemList& systems, float delta)

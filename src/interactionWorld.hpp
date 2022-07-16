@@ -35,6 +35,9 @@ public:
 		setNotificationSettings(true, false);
 		addComponentID(TransformComponent::ID);
 		addComponentID(ColliderComponent::ID);
+		addComponentID(CollisionTypeComponent::ID);
+
+		DEBUG_LOG_TEMP("%d", collisionTable.size());
 	}
 	virtual void onMakeEntity(EntityHandle handle);
 	virtual void onRemoveEntity(EntityHandle handle);
@@ -42,6 +45,7 @@ public:
 	virtual void onRemoveComponent(EntityHandle handle, uint32_t id);
 
 	void processInteractions(float delta);
+	// static void addCollision(CollisionTypeComponent first, CollisionTypeComponent second, CollisionResponse response);
 
 	void addInteraction(Interaction* interaction);
 private:
@@ -75,4 +79,6 @@ private:
 	void addEntity(EntityHandle handle);
 
 	void computeInteractions(EntityInternal& entity, uint32_t interactionIndex);
+
+	static Map<CollisionTypePair, CollisionResponse> collisionTable;
 };

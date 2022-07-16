@@ -11,10 +11,10 @@
 #include "gameCS/collision.h"
 
 
-class TestInteraction : public Interaction
+class OverlapInteraction : public Interaction
 {
 public:
-	TestInteraction() : Interaction()
+	OverlapInteraction() : Interaction()
 	{
 		addInteractorComponentType(TransformComponent::ID);
 		addInteractorComponentType(ColliderComponent::ID);
@@ -30,9 +30,9 @@ public:
 		Transform& transform = ((TransformComponent*)interactorComponents[0])->transform;
 		MotionComponent* motionComponent = ((MotionComponent*)interactorComponents[2]);
 
-		motionComponent->velocity = motionComponent->velocity * -1.1f;
+		// motionComponent->velocity = motionComponent->velocity * -1.1f;
 
-		transform.setRotation((transform.getRotation()*Quaternion(Vector3f(0.0f,0.0f,1.0f), delta)).normalized());
+		// transform.setRotation((transform.getRotation()*Quaternion(Vector3f(0.0f,0.0f,1.0f), delta)).normalized());
 		DEBUG_LOG_TEMP2("Interacting!!");
 	}
 };
@@ -151,11 +151,11 @@ int Game::loadAndRunScene(RenderDevice& device)
 
 	TransformComponent transformComponent;
 	transformComponent.transform.setTranslation(Vector3f(-10.0f, -10.0f, 20.0f));
-
-	MovementControlComponent movementControl;
-	movementControl.movementControls.push_back(MovementControl(Vector3f(1.0f,0.0f,0.0f) * 30.0f, &horizontal));
-	movementControl.movementControls.push_back(MovementControl(Vector3f(0.0f,1.0f,0.0f) * 30.0f, &vertical));
-	movementControl.movementControls.push_back(MovementControl(Vector3f(0.0f,0.0f,1.0f) * 30.0f, &forward));
+	//
+	// MovementControlComponent movementControl;
+	// movementControl.movementControls.push_back(MovementControl(Vector3f(1.0f,0.0f,0.0f) * 30.0f, &horizontal));
+	// movementControl.movementControls.push_back(MovementControl(Vector3f(0.0f,1.0f,0.0f) * 30.0f, &vertical));
+	// movementControl.movementControls.push_back(MovementControl(Vector3f(0.0f,0.0f,1.0f) * 30.0f, &forward));
 	
 	RenderableMeshComponent renderableMesh;
 	renderableMesh.vertexArray = &vertexArray;
@@ -164,10 +164,19 @@ int Game::loadAndRunScene(RenderDevice& device)
 	MotionComponent motionComponent;
 	MegaCubeComponent megaCubeComp;
 	// Create entities
-	EntityHandle handle = ecs.makeEntity(movementControl, renderableMesh, colliderComponent, CollisionTypeComponent{CollisionType::MOVABLE});
+	EntityHandle handle = ecs.makeEntity(renderableMesh, colliderComponent, CollisionTypeComponent{CollisionType::MOVABLE});
 	ecs.addComponent<MotionComponent>(handle);
 	ecs.addComponent<TransformComponent>(handle);
-	for(uint32_t i = 0; i < 1000; i++) {
+	ecs.addComponent<MovementControlComponent>(handle);
+	
+	MovementControlComponent* movementControl = ecs.getComponent<MovementControlComponent>(handle);
+	if(movementControl)
+	{
+		movementControl->movementControls.push_back(MovementControl(Vector3f(1.0f,0.0f,0.0f) * 30.0f, &horizontal));
+		movementControl->movementControls.push_back(MovementControl(Vector3f(0.0f,1.0f,0.0f) * 30.0f, &vertical));
+		movementControl->movementControls.push_back(MovementControl(Vector3f(0.0f,0.0f,1.0f) * 30.0f, &forward));
+	}
+	for(uint32_t i = 0; i < 100; i++) {
 		transformComponent.transform.setTranslation(Vector3f(Math::randf()*10.0f-5.0f, Math::randf()*10.0f-5.0f, 20.0f));
 					//Math::randf()*10.0f-5.0f + 20.0f));
 		renderableMesh.vertexArray = &tinyCubeVertexArray;
@@ -185,16 +194,16 @@ int Game::loadAndRunScene(RenderDevice& device)
 //			megaCubeComp.texIndex = Math::randf() > 0.5f ? 0 : 1;
 //		}
 		//ecs.makeEntity(megaCubeComp);
-		ecs.makeEntity(transformComponent, renderableMesh, motionComponent/*, colliderComponent*/);
+		ecs.makeEntity(transformComponent, renderableMesh, motionComponent, colliderComponent, CollisionTypeComponent{CollisionType::NONE});
 	}
 	
 	// Create the systems
 	MovementControlSystem movementControlSystem;
-	MegaCubeMotionSystem megaCubeMotionSystem;
-	Texture* textures[] = { &texture, &bricks2Texture };
-	MegaCubeRenderer megaCubeRenderer(*gameRenderContext, tinyCubeVertexArray, textures, ARRAY_SIZE_IN_ELEMENTS(textures));
-	MotionSystem motionSystem;
-	RenderableMeshSystem renderableMeshSystem(*gameRenderContext);
+	MegaCubeMotionSystem  megaCubeMotionSystem;
+	Texture*              textures[] = { &texture, &bricks2Texture };
+	MegaCubeRenderer      megaCubeRenderer(*gameRenderContext, tinyCubeVertexArray, textures, std::size(textures));
+	MotionSystem          motionSystem;
+	RenderableMeshSystem  renderableMeshSystem(*gameRenderContext);
 
 	mainSystems.addSystem(movementControlSystem);
 	mainSystems.addSystem(motionSystem);
@@ -203,7 +212,7 @@ int Game::loadAndRunScene(RenderDevice& device)
 	renderingPipeline.addSystem(megaCubeRenderer);
 
 	// Create interactions
-	TestInteraction testInteraction;
+	OverlapInteraction testInteraction;
 	interactionWorld.addInteraction(&testInteraction);
 
 	gameLoop();

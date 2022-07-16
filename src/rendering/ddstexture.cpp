@@ -21,7 +21,7 @@ bool DDSTexture::load(const char* fileName) {
 	}
 
 	// Read header
-	fread(&header, ARRAY_SIZE_IN_ELEMENTS(header), 1, fp); 
+	fread(&header, std::size(header), 1, fp); 
 	height      = *(uint32_t*)&(header[8 ]);
 	width       = *(uint32_t*)&(header[12]);
 	uint32_t linearSize  = *(uint32_t*)&(header[16]);

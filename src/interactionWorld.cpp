@@ -13,26 +13,24 @@ void InteractionWorld::onRemoveEntity(EntityHandle handle)
 
 void InteractionWorld::onAddComponent(EntityHandle handle, uint32_t id)
 {
-	if(id == TransformComponent::ID) {
-		if(ecs.getComponent<ColliderComponent>(handle) != nullptr) {
+	Array<uint32_t> componentIds = getComponentIDs();
+	if(std::find(componentIds.begin(), componentIds.end(), id) != componentIds.end())
+	{
+		if(ecs.hasAllComponents(handle, componentIds))
+		{
 			addEntity(handle);
 		}
-	} else if(id == ColliderComponent::ID) {
-		if(ecs.getComponent<TransformComponent>(handle) != nullptr) {
-			addEntity(handle);
-		}
-	} else if(ecs.getComponent<ColliderComponent>(handle) != nullptr
-			&& ecs.getComponent<TransformComponent>(handle) != nullptr) {
+	}
+	else if(ecs.hasAllComponents(handle, componentIds)) {
 		entitiesToUpdate.push_back(handle);
 	}
 }
 
 void InteractionWorld::onRemoveComponent(EntityHandle handle, uint32_t id)
 {
-	if(id == TransformComponent::ID || id == ColliderComponent::ID) {
+	if(ecs.hasAnyComponent(handle, getComponentIDs())) {
 		entitiesToRemove.push_back(handle);
-	} else if(ecs.getComponent<ColliderComponent>(handle) != nullptr
-			&& ecs.getComponent<TransformComponent>(handle) != nullptr) {
+	} else if(ecs.hasAllComponents(handle, getComponentIDs())) {
 		entitiesToUpdate.push_back(handle);
 	}
 }
@@ -47,11 +45,18 @@ void InteractionWorld::addEntity(EntityHandle handle)
 	entities.push_back(entity);
 }
 
+// void InteractionWorld::addCollision(CollisionTypeComponent first, CollisionTypeComponent second,
+// 	CollisionResponse response)
+// {
+// 	collisionTable[{first, second}] = response;
+// }
+
 void InteractionWorld::addInteraction(Interaction* interaction) {
 	interactions.push_back(interaction);
 	size_t index = interactions.size()-1;
-	for(size_t i = 0; i < entities.size(); i++) {
-		computeInteractions(entities[i], index);
+	for (auto& entity : entities)
+	{
+		computeInteractions(entity, index);
 	}
 }
 
@@ -59,15 +64,17 @@ void InteractionWorld::computeInteractions(EntityInternal& entity, uint32_t inte
 {
 	Interaction* interaction = interactions[interactionIndex];
 	bool isInteractor = true;
-	for(size_t i = 0; i < interaction->getInteractorComponents().size(); i++) {
-		if(ecs.getComponentByType(entity.handle, interaction->getInteractorComponents()[i]) == nullptr) {
+	for (uint32_t componentId : interaction->getInteractorComponents())
+	{
+		if(!ecs.hasComponent(entity.handle, componentId)) {
 			isInteractor = false;
 			break;
 		}
 	}
 	bool isInteractee = true;
-	for(size_t i = 0; i < interaction->getInteracteeComponents().size(); i++) {
-		if(ecs.getComponentByType(entity.handle, interaction->getInteracteeComponents()[i]) == nullptr) {
+	for (uint32_t componentId : interaction->getInteracteeComponents())
+	{
+		if(!ecs.hasComponent(entity.handle, componentId)) {
 			isInteractee = false;
 			break;
 		}
@@ -83,10 +90,11 @@ void InteractionWorld::computeInteractions(EntityInternal& entity, uint32_t inte
 void InteractionWorld::processInteractions(float delta)
 {
 	removeAndUpdateEntities();
-	for(size_t i = 0; i < entities.size(); i++) {
-		ColliderComponent* colliderComponent = ecs.getComponent<ColliderComponent>(entities[i].handle);
+	for (auto& entity : entities)
+	{
+		ColliderComponent* colliderComponent = ecs.getComponent<ColliderComponent>(entity.handle);
 		colliderComponent->transformedAABB = colliderComponent->aabb.transform(
-				ecs.getComponent<TransformComponent>(entities[i].handle)->transform.toMatrix());
+				ecs.getComponent<TransformComponent>(entity.handle)->transform.toMatrix());
 	}
 	std::sort(entities.begin(), entities.end(), compareAABB);
 	// Go through the list, test intersections in range
@@ -95,16 +103,31 @@ void InteractionWorld::processInteractions(float delta)
 	Vector3f centerSum(0.0f);
 	Vector3f centerSqSum(0.0f);
 	for(size_t i = 0; i < entities.size(); i++) {
-		AABB aabb = ecs.getComponent<ColliderComponent>(entities[i].handle)->transformedAABB;
+		EntityInternal firstEntity = entities[i];
+		if(ecs.getComponent<CollisionTypeComponent>(firstEntity.handle)->collisionType == CollisionType::NONE)
+		{
+			continue;
+		}
+		AABB aabb = ecs.getComponent<ColliderComponent>(firstEntity.handle)->transformedAABB;
 		Vector3f center = aabb.getCenter();
 		centerSum += center;
 		centerSqSum += (center * center);
+		
 		// Find intersections for this entity
 		for(size_t j = i+1; j < entities.size(); j++) {
-			AABB otherAABB = ecs.getComponent<ColliderComponent>(entities[j].handle)->transformedAABB;
+			EntityInternal secondEntity = entities[j];
+			AABB otherAABB = ecs.getComponent<ColliderComponent>(secondEntity.handle)->transformedAABB;
 			if(otherAABB.getMinExtents()[compareAABB.axis]
 					> aabb.getMaxExtents()[compareAABB.axis]) {
 				break;
+			}
+
+			// we only check intersections if entities' collision types allow it
+			CollisionType collisionTypeFirst = ecs.getComponent<CollisionTypeComponent>(firstEntity.handle)->collisionType;
+			CollisionType collisionTypeSecond = ecs.getComponent<CollisionTypeComponent>(secondEntity.handle)->collisionType;
+			if(collisionTable[{collisionTypeFirst, collisionTypeSecond}] == CollisionResponse::NONE)
+			{
+				continue;
 			}
 
 			if(aabb.intersects(otherAABB)) {
