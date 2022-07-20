@@ -91,15 +91,13 @@
 	T(const T& other) {(void)other;} \
 	void operator=(const T& other) { (void)other; }
 
-#define LOG_CATEGORY(category) "LOG_##category"
-
 #define LOG_ERROR "Error"
 #define LOG_WARNING "Warning"
 #define LOG_TYPE_RENDERER "Renderer"
 #define LOG_TYPE_IO "IO"
 #define DEBUG_LOG(category, level, message, ...) \
 	fprintf(stderr, "[%s] ", category); \
-	fprintf(stderr, "[%s] (%s:%d): ", level, __FILE__, __LINE__); \
+	fprintf(stderr, "[%s] (%s:%d): ", level, __FUNCTION__, __LINE__); \
 	fprintf(stderr, message, ##__VA_ARGS__); \
 	fprintf(stderr, "\n")
 #define DEBUG_LOG_TEMP(message, ...) DEBUG_LOG("TEMP", "TEMP", message, ##__VA_ARGS__)

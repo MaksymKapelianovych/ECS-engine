@@ -172,7 +172,7 @@ private:
 	Map<uint32_t, Array<uint8_t>> components;
 	Array<std::pair<uint32_t, Array<std::pair<uint32_t, uint32_t> > >* > entities;
 	Array<ECSListener*> listeners;
-
+public:
 	inline static std::pair<uint32_t, Array<std::pair<uint32_t, uint32_t> > >* handleToRawType(EntityHandle handle)
 	{
 		return (std::pair<uint32_t, Array<std::pair<uint32_t, uint32_t> > >*)handle;

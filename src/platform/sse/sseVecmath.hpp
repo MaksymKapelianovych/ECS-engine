@@ -524,6 +524,52 @@ public:
 		return vec;
 	}
 
+	// FORCEINLINE bool operator==(const SSEVector& other) const
+	// {
+	// 	__m128 VT = _mm_cmpeq_ps(data,other.data);
+	// 	return (_mm_movemask_ps(VT) == 0xF);
+	// }
+	//
+	// FORCEINLINE bool equals(const SSEVector& other, float errorMargin) const
+	// {
+	// 	return (*this - other).abs() < SSEVector::load1f(errorMargin);
+	// }
+	//
+	// FORCEINLINE bool notEquals(const SSEVector& other, float errorMargin) const
+	// {
+	// 	return (*this - other).abs() >= SSEVector::load1f(errorMargin);
+	// }
+	//
+	// FORCEINLINE bool operator!=(const SSEVector& other) const
+	// {
+	// 	__m128 VT = _mm_cmpneq_ps(data,other.data);
+	// 	return (_mm_movemask_ps(VT) == 0xF);
+	// }
+	//
+	// FORCEINLINE bool operator>(const SSEVector& other) const
+	// {
+	// 	__m128 VT = _mm_cmpgt_ps(data,other.data);
+	// 	return (_mm_movemask_ps(VT) == 0xF);
+	// }
+	//
+	// FORCEINLINE bool operator>=(const SSEVector& other) const
+	// {
+	// 	__m128 VT = _mm_cmpge_ps(data,other.data);
+	// 	return (_mm_movemask_ps(VT) == 0xF);
+	// }
+	//
+	// FORCEINLINE bool operator<(const SSEVector& other) const
+	// {
+	// 	__m128 VT = _mm_cmplt_ps(data,other.data);
+	// 	return (_mm_movemask_ps(VT) == 0xF);
+	// }
+	//
+	// FORCEINLINE bool operator<=(const SSEVector& other) const
+	// {
+	// 	__m128 VT = _mm_cmple_ps(data,other.data);
+	// 	return (_mm_movemask_ps(VT) == 0xF);
+	// }
+
 	FORCEINLINE SSEVector operator|(const SSEVector& other) const
 	{
 		SSEVector vec;

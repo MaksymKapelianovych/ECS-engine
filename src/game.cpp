@@ -19,21 +19,72 @@ public:
 		addInteractorComponentType(TransformComponent::ID);
 		addInteractorComponentType(ColliderComponent::ID);
 		addInteractorComponentType(MotionComponent::ID);
+		addInteractorComponentType(CollisionTypeComponent::ID);
 		
 		addInteracteeComponentType(TransformComponent::ID);
 		addInteracteeComponentType(ColliderComponent::ID);
 		addInteracteeComponentType(MotionComponent::ID);
+		addInteracteeComponentType(CollisionTypeComponent::ID);
 	}
 
 	virtual void interact(float delta, BaseECSComponent** interactorComponents, BaseECSComponent** interacteeComponents)
 	{
-		Transform& transform = ((TransformComponent*)interactorComponents[0])->transform;
-		MotionComponent* motionComponent = ((MotionComponent*)interactorComponents[2]);
+		Transform& transformInteractor = ((TransformComponent*)interactorComponents[0])->transform;
+		Transform& transformInteractee = ((TransformComponent*)interacteeComponents[0])->transform;
+		
+		ColliderComponent* colliderInteractor = ((ColliderComponent*)interactorComponents[1]);
+		ColliderComponent* colliderInteractee = ((ColliderComponent*)interacteeComponents[1]);
+
+		MotionComponent* motionInteractor = ((MotionComponent*)interactorComponents[2]);
+		MotionComponent* motionInteractee = ((MotionComponent*)interacteeComponents[2]);
+		
+		CollisionTypeComponent* collisionInteractor = ((CollisionTypeComponent*)interactorComponents[3]);
+		CollisionTypeComponent* collisionInteractee = ((CollisionTypeComponent*)interacteeComponents[3]);
+
+		String collision1;
+		String collision2;
+
+		switch (collisionInteractor->collisionType) {
+			case CollisionType::STATIC: collision1 = "static"; break;
+			case CollisionType::MOVABLE: collision1 = "movable"; break;
+			case CollisionType::PLAYER: collision1 = "player"; break;
+			case CollisionType::NONE: collision1 = "none"; break;
+			case CollisionType::NUM: break;
+			default: ;
+		}
+		
+		switch (collisionInteractee->collisionType) {
+			case CollisionType::STATIC: collision2 = "static"; break;
+			case CollisionType::MOVABLE: collision2 = "movable"; break;
+			case CollisionType::PLAYER: collision2 = "player"; break;
+			case CollisionType::NONE: collision2 = "none"; break;
+			case CollisionType::NUM: break;
+			default: ;
+		}
+
+		DEBUG_LOG("log_interaction", LOG_WARNING, "Interacting entity (%d:%s) with (%d:%s) ",
+			ECS::handleToRawType(colliderInteractor->entity)->first, collision1.c_str(), ECS::handleToRawType(colliderInteractee->entity)->first, collision2.c_str());
+
+		const Vector3f distanceVec = colliderInteractor->aabb.distanceTo(colliderInteractee->aabb);
+		const float distance = distanceVec.length();
+
+		Vector3f velocity = motionInteractor->velocity;
+
+		transformInteractor.setTranslation(transformInteractor.getTranslation() - motionInteractor->velocity * delta);
+		transformInteractee.setTranslation(transformInteractee.getTranslation() - motionInteractee->velocity * delta);
+
+		float xAxisTimeToCollide = !Math::isNearZero(velocity.getX()) ? Math::abs(distance / (velocity.getX() * delta)) : std::numeric_limits<float>::infinity();
+		float yAxisTimeToCollide = !Math::isNearZero(velocity.getY()) ? Math::abs(distance / (velocity.getY() * delta)) : std::numeric_limits<float>::infinity();
+		float zAxisTimeToCollide = !Math::isNearZero(velocity.getZ()) ? Math::abs(distance / (velocity.getZ() * delta)) : std::numeric_limits<float>::infinity();
+
+		float shortestTime = Math::min3(xAxisTimeToCollide, yAxisTimeToCollide, zAxisTimeToCollide);
+		
+		transformInteractor.setTranslation(transformInteractor.getTranslation() - velocity * shortestTime * delta);
+
+		// motionInteractor->velocity *= -0.5f;
+		// motionInteractee->velocity *= -0.5f;
 
 		// motionComponent->velocity = motionComponent->velocity * -1.1f;
-
-		// transform.setRotation((transform.getRotation()*Quaternion(Vector3f(0.0f,0.0f,1.0f), delta)).normalized());
-		DEBUG_LOG_TEMP2("Interacting!!");
 	}
 };
 
@@ -64,7 +115,7 @@ void Game::gameLoop()
 		while(updateTimer >= frameTime) {
 			app->processMessages(frameTime, eventHandler);
 			ecs.updateSystems(mainSystems, frameTime);
-			interactionWorld.processInteractions(frameTime);
+			// interactionWorld.processInteractions(frameTime);
 			updateTimer -= frameTime;
 			shouldRender = true;
 		}
@@ -164,7 +215,7 @@ int Game::loadAndRunScene(RenderDevice& device)
 	MotionComponent motionComponent;
 	MegaCubeComponent megaCubeComp;
 	// Create entities
-	EntityHandle handle = ecs.makeEntity(renderableMesh, colliderComponent, CollisionTypeComponent{CollisionType::MOVABLE});
+	EntityHandle handle = ecs.makeEntity(renderableMesh, colliderComponent, CollisionTypeComponent{CollisionType::PLAYER});
 	ecs.addComponent<MotionComponent>(handle);
 	ecs.addComponent<TransformComponent>(handle);
 	ecs.addComponent<MovementControlComponent>(handle);
@@ -176,7 +227,7 @@ int Game::loadAndRunScene(RenderDevice& device)
 		movementControl->movementControls.push_back(MovementControl(Vector3f(0.0f,1.0f,0.0f) * 30.0f, &vertical));
 		movementControl->movementControls.push_back(MovementControl(Vector3f(0.0f,0.0f,1.0f) * 30.0f, &forward));
 	}
-	for(uint32_t i = 0; i < 100; i++) {
+	for(uint32_t i = 0; i < 10; i++) {
 		transformComponent.transform.setTranslation(Vector3f(Math::randf()*10.0f-5.0f, Math::randf()*10.0f-5.0f, 20.0f));
 					//Math::randf()*10.0f-5.0f + 20.0f));
 		renderableMesh.vertexArray = &tinyCubeVertexArray;
@@ -194,7 +245,7 @@ int Game::loadAndRunScene(RenderDevice& device)
 //			megaCubeComp.texIndex = Math::randf() > 0.5f ? 0 : 1;
 //		}
 		//ecs.makeEntity(megaCubeComp);
-		ecs.makeEntity(transformComponent, renderableMesh, motionComponent, colliderComponent, CollisionTypeComponent{CollisionType::NONE});
+		ecs.makeEntity(transformComponent, renderableMesh, motionComponent, colliderComponent, CollisionTypeComponent{CollisionType::STATIC});
 	}
 	
 	// Create the systems

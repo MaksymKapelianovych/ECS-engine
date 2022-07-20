@@ -21,6 +21,27 @@ bool Vector3f::equals(float val, float errorMargin) const
 }
 
 
+bool Vector3f::operator<(const Vector3f& other) const
+{
+	return (toVector() >= other.toVector()).isZero3f();
+}
+
+bool Vector3f::operator>(const Vector3f& other) const
+{
+	return (toVector() <= other.toVector()).isZero3f();
+}
+
+bool Vector3f::operator<=(const Vector3f& other) const
+{
+	return (toVector() > other.toVector()).isZero3f();
+}
+
+bool Vector3f::operator>=(const Vector3f& other) const
+{
+	return (toVector() < other.toVector()).isZero3f();
+}
+
+
 float Vector3f::operator[](uint32_t index) const
 {
 	assertCheck(index < 3);

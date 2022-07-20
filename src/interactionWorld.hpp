@@ -48,6 +48,10 @@ public:
 	// static void addCollision(CollisionTypeComponent first, CollisionTypeComponent second, CollisionResponse response);
 
 	void addInteraction(Interaction* interaction);
+
+protected:
+	void processInteractionInternal(float delta, size_t interactorIndex, size_t interacteeIndex,
+		Array<BaseECSComponent*>& interactorComponents, Array<BaseECSComponent*>& interacteeComponents);
 private:
 	struct EntityInternal {
 		EntityHandle handle;

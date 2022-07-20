@@ -87,6 +87,34 @@ void InteractionWorld::computeInteractions(EntityInternal& entity, uint32_t inte
 	}
 }
 
+void InteractionWorld::processInteractionInternal(float delta, size_t interactorIndex, size_t interacteeIndex,
+	Array<BaseECSComponent*>& interactorComponents, Array<BaseECSComponent*>& interacteeComponents)
+{
+	for(size_t dummyIndex = 0; dummyIndex < 2; dummyIndex++) {
+		for(size_t k = 0; k < entities[interactorIndex].interactors.size(); k++) {
+			for(size_t l = 0; l < entities[interacteeIndex].interactees.size(); l++) {
+				uint32_t index = entities[interactorIndex].interactors[k];
+				if(index == entities[interacteeIndex].interactees[l]) {
+					Interaction* interaction = interactions[index];
+					interactorComponents.resize(Math::max(interactorComponents.size(), interaction->getInteractorComponents().size()));
+					interacteeComponents.resize(Math::max(interacteeComponents.size(), interaction->getInteracteeComponents().size()));
+					for(size_t m = 0; m < interaction->getInteractorComponents().size(); m++) {
+						interactorComponents[m] = ecs.getComponentByType(entities[interactorIndex].handle, interaction->getInteractorComponents()[m]);	
+					}
+					for(size_t m = 0; m < interaction->getInteracteeComponents().size(); m++) {
+						interacteeComponents[m] = ecs.getComponentByType(entities[interacteeIndex].handle, interaction->getInteracteeComponents()[m]);	
+					}
+					interaction->interact(delta, &interactorComponents[0], &interacteeComponents[0]);
+				}
+			}
+		}
+		// Check the other possibility: If the first entity is the interactee instead of the interactor
+		size_t tempIndex = interactorIndex;
+		interactorIndex = interacteeIndex;
+		interacteeIndex = tempIndex;
+	}
+}
+
 void InteractionWorld::processInteractions(float delta)
 {
 	removeAndUpdateEntities();
@@ -130,32 +158,10 @@ void InteractionWorld::processInteractions(float delta)
 				continue;
 			}
 
-			if(aabb.intersects(otherAABB)) {
-				size_t interactorIndex = i;
-				size_t interacteeIndex = j;
-				for(size_t dummyIndex = 0; dummyIndex < 2; dummyIndex++) {
-					for(size_t k = 0; k < entities[interactorIndex].interactors.size(); k++) {
-						for(size_t l = 0; l < entities[interacteeIndex].interactees.size(); l++) {
-							uint32_t index = entities[interactorIndex].interactors[k];
-							if(index == entities[interacteeIndex].interactees[l]) {
-								Interaction* interaction = interactions[index];
-								interactorComponents.resize(Math::max(interactorComponents.size(), interaction->getInteractorComponents().size()));
-								interacteeComponents.resize(Math::max(interacteeComponents.size(), interaction->getInteracteeComponents().size()));
-								for(size_t m = 0; m < interaction->getInteractorComponents().size(); m++) {
-									interactorComponents[m] = ecs.getComponentByType(entities[interactorIndex].handle, interaction->getInteractorComponents()[m]);	
-								}
-								for(size_t m = 0; m < interaction->getInteracteeComponents().size(); m++) {
-									interacteeComponents[m] = ecs.getComponentByType(entities[interacteeIndex].handle, interaction->getInteracteeComponents()[m]);	
-								}
-								interaction->interact(delta, &interactorComponents[0], &interacteeComponents[0]);
-							}
-						}
-					}
-					// Check the other possibility: If the first entity is the interactee instead of the interactor
-					size_t tempIndex = interactorIndex;
-					interactorIndex = interacteeIndex;
-					interacteeIndex = tempIndex;
-				}
+			if(aabb.intersects(otherAABB) && collisionTable[{collisionTypeFirst, collisionTypeSecond}] == CollisionResponse::BLOCK) {
+				// size_t interactorIndex = i;
+				// size_t interacteeIndex = j;
+				processInteractionInternal(delta, i, j, interactorComponents, interacteeComponents);
 			}
 		}
 	}

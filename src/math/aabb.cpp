@@ -79,6 +79,43 @@ AABB AABB::transform(const Matrix& transform) const
 //	return AABB(newMinExtents.min(newMaxExtents), newMaxExtents.max(newMinExtents));
 }
 
+Vector3f AABB::distanceTo(const AABB& other) const
+{
+	const Vector3f thisMin = getMinExtents();
+	const Vector3f otherMin = other.getMinExtents();
+
+	float dx = 0.f, dy = 0.f, dz = 0.f;
+
+	if(thisMin.getX() < otherMin.getX())
+	{
+		dx = otherMin.getX() - (thisMin.getX() + getWidth());
+	}
+	else if(thisMin.getX() > otherMin.getX())
+	{
+		dx = thisMin.getX() - (otherMin.getX() + other.getWidth());
+	}
+
+	if(thisMin.getY() < otherMin.getY())
+	{
+		dy = otherMin.getY() - (thisMin.getY() + getHeight());
+	}
+	else if(thisMin.getY() > otherMin.getY())
+	{
+		dy = thisMin.getY() - (otherMin.getY() + other.getHeight());
+	}
+
+	if(thisMin.getZ() < otherMin.getZ())
+	{
+		dz = otherMin.getZ() - (thisMin.getZ() + getLength());
+	}
+	else if(thisMin.getZ() > otherMin.getZ())
+	{
+		dz = thisMin.getZ() - (otherMin.getZ() + other.getLength());
+	}
+
+	return {dx, dy, dz};
+}
+
 bool AABB::intersectRay(const Vector3f& start, const Vector3f& rayDir, float& point1, float& point2) const
 {
 	Vector startVec = start.toVector();

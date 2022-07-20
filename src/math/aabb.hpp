@@ -3,6 +3,8 @@
 #include "vector.hpp"
 #include "matrix.hpp"
 
+#define LOG_AABB "LOG_AABB"
+
 class AABB
 {
 public:
@@ -16,6 +18,8 @@ public:
 	FORCEINLINE bool intersects(const AABB& other) const;
 	AABB transform(const Matrix& transform) const;
 
+	Vector3f distanceTo(const AABB& other) const;
+
 	FORCEINLINE AABB expand(float distance) const;
 	FORCEINLINE AABB expand(const Vector3f& amt) const;
 	FORCEINLINE AABB moveTo(const Vector3f& destination) const;
@@ -23,6 +27,10 @@ public:
 	FORCEINLINE Vector3f getExtents() const;
 	FORCEINLINE Vector3f getMinExtents() const;
 	FORCEINLINE Vector3f getMaxExtents() const;
+	FORCEINLINE float getLengthByDim(uint32_t dimIndex) const;
+	FORCEINLINE float getWidth() const;
+	FORCEINLINE float getHeight() const;
+	FORCEINLINE float getLength() const;
 	FORCEINLINE void getCenterAndExtents(Vector3f& center, Vector3f& extents) const;
 	FORCEINLINE float getVolume() const;
 	FORCEINLINE AABB overlap(const AABB& other) const;
@@ -46,8 +54,18 @@ private:
 
 FORCEINLINE AABB::AABB(const Vector3f& minExtents, const Vector3f& maxExtents)
 {
-	extents[0] = minExtents;
-	extents[1] = maxExtents;
+	assert(minExtents <= maxExtents || minExtents >= maxExtents);
+
+	if(minExtents >= maxExtents)
+	{
+		extents[0] = maxExtents;
+		extents[1] = minExtents;
+	}
+	else
+	{
+		extents[0] = minExtents;
+		extents[1] = maxExtents;
+	}
 }
 
 FORCEINLINE bool AABB::intersects(const AABB& other) const
@@ -91,6 +109,28 @@ FORCEINLINE Vector3f AABB::getMaxExtents() const
 {
 	return extents[1];
 }
+
+FORCEINLINE float AABB::getLengthByDim(uint32_t dimIndex) const
+{
+	return getMaxExtents()[dimIndex] - getMinExtents()[dimIndex];
+}
+
+
+FORCEINLINE float AABB::getWidth() const
+{
+	return getLengthByDim(0);
+}
+
+FORCEINLINE float AABB::getHeight() const
+{
+	return getLengthByDim(1);
+}
+
+FORCEINLINE float AABB::getLength() const
+{
+	return getLengthByDim(2);
+}
+
 
 FORCEINLINE void AABB::getCenterAndExtents(Vector3f& center, Vector3f& extents) const
 {

@@ -39,10 +39,26 @@ static void testAABB()
 	AABB aabb2(Vector3f(1.0f, 1.0f, 1.0f), Vector3f(2.0f, 2.0f, 2.0f));
 	AABB aabb3(Vector3f(1.0f, 0.0f, 0.0f), Vector3f(2.0f, 1.0f, 1.0f));
 	AABB aabb4(Vector3f(0.0f, 0.0f, -2.0f), Vector3f(1.0f, 1.0f, -1.0f));
+
+	
 	AABB aabb5(Vector3f(0.0f, 0.5f, 0.0f), Vector3f(1.0f, 1.5f, 1.0f));
 	AABB aabb6(Vector3f(0.3f, 0.5f, 0.7f), Vector3f(1.3f, 1.5f, 1.7f));
 	AABB aabb7(Vector3f(0.3f, 0.5f, 0.7f), Vector3f(0.5f, 0.7f, 0.9f));
+	
+	AABB aabb9(Vector3f(2.0f, 2.0f, 2.f), Vector3f(3.f, 3.f, 3.f));
+	AABB aabb10(Vector3f(5.f, 2.f, -10.f), Vector3f(15.0f, 3.0f, -9.f));
+	AABB aabb11(Vector3f(9.0f, 6.0f, 0.f), Vector3f(11.f, 11.f, 0.f));
 
+	
+	AABB aabb12(Vector3f(2.0f, 0.0f, 0.f), Vector3f(3.f, 0.f, 0.f));
+	AABB aabb13(Vector3f(0.f, 0.f, 0.f), Vector3f(1.0f, 0.0f, 0.f));
+
+	// DEBUG_LOG_TEMP("Distance between is %s", StringFuncs::toString(aabb1.distanceTo(aabb1)).c_str());
+	assert(aabb1.distanceTo(aabb1) == Vector3f{0.f});
+	assert(aabb1.distanceTo(aabb2) == Vector3f{0.f});
+	assert(aabb1.distanceTo(aabb9) == Vector3f(1.f, 1.f, 1.f));
+	assert(aabb1.distanceTo(aabb10) == Vector3f(4.f, 1.f, 9.f));
+	
 	assert(aabb1.intersects(aabb2) == false);
 	assert(aabb1.intersects(aabb2.translate(Vector3f(-0.5f))) == true);
 	assert(aabb1.intersects(aabb2.translate(Vector3f(0.5f))) == false);

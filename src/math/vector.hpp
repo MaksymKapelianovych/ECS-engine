@@ -1,5 +1,6 @@
 #pragma once
 
+#include "string.hpp"
 #include "core/common.hpp"
 #include "vecmath.hpp"
 
@@ -31,6 +32,10 @@ public:
 	bool operator!=(const Vector3f& other) const;
 	bool equals(const Vector3f& other, float errorMargin=1.e-4f) const;
 	bool equals(float val, float errorMargin=1.e-4f) const;
+	bool operator<(const Vector3f& other) const;
+	bool operator>(const Vector3f& other) const;
+	bool operator<=(const Vector3f& other) const;
+	bool operator>=(const Vector3f& other) const;
 
 	FORCEINLINE Vector3f operator-() const;
 	FORCEINLINE Vector3f operator+=(const Vector3f& other);
@@ -44,6 +49,9 @@ public:
 	FORCEINLINE Vector3f operator/=(float val);
 
 	float operator[](uint32_t index) const;
+	FORCEINLINE float getX() const;
+	FORCEINLINE float getY() const;
+	FORCEINLINE float getZ() const;
 
 	void set(float x, float y, float z);
 	void set(uint32_t index, float val);
@@ -76,6 +84,8 @@ public:
 
 	FORCEINLINE Vector toVector() const;
 	Vector toVector(float w) const;
+
+	FORCEINLINE friend std::ostream& operator<<(std::ostream& os, const Vector3f& v);
 private:
 	Vector vec;
 };
@@ -225,6 +235,22 @@ FORCEINLINE Vector3f Vector3f::operator/=(float val)
 	vec = vec * Vector::load1f(Math::reciprocal(val));
 	return *this;
 }
+
+FORCEINLINE float Vector3f::getX() const
+{
+	return operator[](0);
+}
+
+FORCEINLINE float Vector3f::getY() const
+{
+	return operator[](1);
+}
+
+FORCEINLINE float Vector3f::getZ() const
+{
+	return operator[](2);
+}
+
 
 FORCEINLINE Vector Vector3f::toVector() const
 {
@@ -451,5 +477,17 @@ FORCEINLINE Vector2f Vector2f::operator/=(float val)
 	vals[0] /= val;
 	vals[1] /= val;
 	return *this;
+}
+
+FORCEINLINE std::ostream& operator<<(std::ostream& os, const Vector3f& v)
+{
+	os << "{";
+	os << v.getX();
+	os << ", ";
+	os << v.getY();
+	os << ", ";
+	os << v.getZ();
+	os << "}";
+	return os;
 }
 

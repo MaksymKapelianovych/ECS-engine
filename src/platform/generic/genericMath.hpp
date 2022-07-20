@@ -355,7 +355,11 @@ struct GenericMath
 	{
 		return abs(val1 - val2) < errorMargin;
 	}
-
+	
+	static FORCEINLINE bool isNearZero(const float& val1)
+	{
+		return equals(val1, 0.f, 0.0001f);
+	}
 	// TODO: Min and max of array
 };
 
