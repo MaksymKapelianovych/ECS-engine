@@ -2,9 +2,8 @@
 
 #include "ecsComponent.hpp"
 #include "ecsSystem.hpp"
+#include "string.hpp"
 #include "dataStructures/map.hpp"
-
-#define LOG_ECS LOG_CATEGORY(ECS)
 
 class ECSListener
 {
@@ -66,7 +65,7 @@ public:
 	template <class ...ComponentTypes>
 	FORCEINLINE EntityHandle makeEntity(ComponentTypes... componentTypes)
 	{
-		return makeEntity({(&componentTypes)...}, {ComponentTypes::ID...}, sizeof...(componentTypes));
+		return makeEntity({(&componentTypes)...}, {std::remove_reference_t<ComponentTypes>::ID...}, sizeof...(componentTypes));
 	}
 
 
@@ -94,7 +93,8 @@ public:
 	template<class Component>
 	inline void addComponent(EntityHandle entity)
 	{
-		addComponentInternal(entity, handleToEntity(entity), Component::ID, Component{});
+		Component temp = Component{};
+		addComponentInternal(entity, handleToEntity(entity), Component::ID, temp);
 		for(uint32_t i = 0; i < listeners.size(); i++) {
 			const Array<uint32_t>& componentIDs = listeners[i]->getComponentIDs();
 			if(listeners[i]->shouldNotifyOnAllComponentOperations()) {
@@ -167,6 +167,19 @@ public:
 
 	// System methods
 	void updateSystems(ECSSystemList& systems, float delta);
+
+	// Debug methods
+#ifdef DEBUG
+	void debugPrintComponents() const;
+	void debugPrintEntities() const;
+	void debugPrintAll() const
+	{
+		debugPrintComponents();
+		std::cout << std::endl;
+		debugPrintEntities();
+	}
+#endif
+	
 	
 private:
 	Map<uint32_t, Array<uint8_t>> components;

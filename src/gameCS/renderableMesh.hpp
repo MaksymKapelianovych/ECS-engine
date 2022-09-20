@@ -10,10 +10,18 @@ struct RenderableMeshComponent : public ECSComponent<RenderableMeshComponent>
 	Texture* texture = nullptr;
 };
 
+inline std::ostream& operator<<(std::ostream& os, const RenderableMeshComponent& value)
+{
+	os << std::setw(ECS_LOG_MARGIN) << value.texture->getId();
+	return os;
+}
+
+ECS_COMPONENT_PRINT(RenderableMeshComponent, "texture");
+
 class RenderableMeshSystem : public BaseECSSystem
 {
 public:
-	RenderableMeshSystem(GameRenderContext& contextIn) : BaseECSSystem(), context(contextIn)
+	RenderableMeshSystem(ECS& ecsIn, GameRenderContext& contextIn) : BaseECSSystem(ecsIn), context(contextIn)
 	{
 		addComponentType(TransformComponent::ID);
 		addComponentType(RenderableMeshComponent::ID);
@@ -23,7 +31,7 @@ public:
 	{
 		TransformComponent* transform = (TransformComponent*)components[0];
 		RenderableMeshComponent* mesh = (RenderableMeshComponent*)components[1];
-
+		
 		context.renderMesh(*mesh->vertexArray, *mesh->texture, transform->transform.toMatrix());
 	}
 private:

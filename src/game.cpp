@@ -1,4 +1,6 @@
 #include "game.hpp"
+
+#include "actionInput.h"
 #include "core/input.hpp"
 #include "rendering/modelLoader.hpp"
 #include "core/timing.hpp"
@@ -27,16 +29,17 @@ void Game::gameLoop()
 		fpsTimeCounter += passedTime;
 		updateTimer += passedTime;
 
-		if(fpsTimeCounter >= 1.0) {
-			double msPerFrame = 1000.0/(double)fps;
-			DEBUG_LOG("FPS", "NONE", "%f ms (%d fps)", msPerFrame, fps);
-			fpsTimeCounter = 0;
-			fps = 0;
-		}
+		// if(fpsTimeCounter >= 1.0) {
+		// 	double msPerFrame = 1000.0/(double)fps;
+		// 	DEBUG_LOG("FPS", "NONE", "%f ms (%d fps)", msPerFrame, fps);
+		// 	fpsTimeCounter = 0;
+		// 	fps = 0;
+		// }
 		
 		bool shouldRender = false;
 		while(updateTimer >= frameTime) {
 			app->processMessages(frameTime, eventHandler);
+			ecs.updateSystems(inputSystems, frameTime);
 			ecs.updateSystems(mainSystems, frameTime);
 			// interactionWorld.processInteractions(frameTime);
 			updateTimer -= frameTime;
@@ -107,11 +110,14 @@ int Game::loadAndRunScene(RenderDevice& device)
 	Texture bricks2Texture(device, ddsTexture);
 	// End scene creation
 
-	InputControl horizontal;
-	InputControl vertical;
-	InputControl forward;
-	// eventHandler.addKeyControl(Input::KEY_A, horizontal, -1.0f);
-	// eventHandler.addKeyControl(Input::KEY_D, horizontal, 1.0f);
+	AxisInputControl horizontal;
+	AxisInputControl vertical;
+	AxisInputControl forward;
+
+	ActionInputControl printEcsStatsInput;
+	ActionInputControl changePawnInput;
+	eventHandler.addKeyControl(Input::KEY_Q, printEcsStatsInput, false);
+	eventHandler.addKeyControl(Input::KEY_TAB, changePawnInput, true);
 	eventHandler.addKeyControl(Input::KEY_LEFT, horizontal, -1.0f);
 	eventHandler.addKeyControl(Input::KEY_RIGHT, horizontal, 1.0f);
 	eventHandler.addKeyControl(Input::KEY_W, forward, 1.0f);
@@ -120,11 +126,11 @@ int Game::loadAndRunScene(RenderDevice& device)
 	eventHandler.addKeyControl(Input::KEY_DOWN, vertical, -1.0f);
 
 	// Create components
-	ColliderComponent colliderComponent;
-	colliderComponent.aabb = vertexArrayAABB;
+	// ColliderComponent colliderComponent;
+	// colliderComponent.aabb = vertexArrayAABB;
 
 	TransformComponent transformComponent;
-	transformComponent.transform.setTranslation(Vector3f(-10.0f, -10.0f, 20.0f));
+	transformComponent.transform.setTranslation(Vector3f(-10.0f, -10.0f, 0.0f));
 	//
 	// MovementControlComponent movementControl;
 	// movementControl.movementControls.push_back(MovementControl(Vector3f(1.0f,0.0f,0.0f) * 30.0f, &horizontal));
@@ -132,29 +138,32 @@ int Game::loadAndRunScene(RenderDevice& device)
 	// movementControl.movementControls.push_back(MovementControl(Vector3f(0.0f,0.0f,1.0f) * 30.0f, &forward));
 	
 	RenderableMeshComponent renderableMesh;
-	renderableMesh.vertexArray = &vertexArray;
-	renderableMesh.texture = &texture;
+
 	
-	MotionComponent motionComponent;
-	MegaCubeComponent megaCubeComp;
-	// Create entities
-	EntityHandle handle = ecs.makeEntity(renderableMesh, colliderComponent, CollisionTypeComponent{CollisionType::PLAYER});
-	ecs.addComponent<MotionComponent>(handle);
-	ecs.addComponent<TransformComponent>(handle);
-	ecs.addComponent<MovementControlComponent>(handle);
-	
-	MovementControlComponent* movementControl = ecs.getComponent<MovementControlComponent>(handle);
-	if(movementControl)
+	ActionInputComponent actionInputComponent;
+	actionInputComponent.inputs.emplace_back(ActionInput{&printEcsStatsInput, [&ecs = this->ecs] ()
 	{
-		movementControl->movementControls.push_back(MovementControl(Vector3f(1.0f,0.0f,0.0f) * 30.0f, &horizontal));
-		movementControl->movementControls.push_back(MovementControl(Vector3f(0.0f,1.0f,0.0f) * 30.0f, &vertical));
-		movementControl->movementControls.push_back(MovementControl(Vector3f(0.0f,0.0f,1.0f) * 30.0f, &forward));
+#ifdef DEBUG
+		ecs.debugPrintAll();
+#endif
 	}
-	for(uint32_t i = 0; i < 10; i++) {
-		transformComponent.transform.setTranslation(Vector3f(Math::randf()*10.0f-5.0f, Math::randf()*10.0f-5.0f, 20.0f));
+	});
+	
+	// actionInputComponent.inputControl = &printEcsStatsInput;
+	// actionInputComponent.function = 
+	// Create entities
+	MovementControlComponent movementControl;
+	movementControl.movementControls.push_back(MovementControl(Vector3f(1.0f,0.0f,0.0f) * 30.0f, &horizontal));
+	movementControl.movementControls.push_back(MovementControl(Vector3f(0.0f,1.0f,0.0f) * 30.0f, &vertical));
+	movementControl.movementControls.push_back(MovementControl(Vector3f(0.0f,0.0f,1.0f) * 30.0f, &forward));
+
+	EntityHandle handle1, handle2;
+	
+	for(uint32_t i = 0; i < 1; i++) {
+		transformComponent.transform.setTranslation(Vector3f(Math::randf()*2.0f-1.0f, Math::randf()*2.0f-1.0f, 5.0f));
 					//Math::randf()*10.0f-5.0f + 20.0f));
 		renderableMesh.vertexArray = &tinyCubeVertexArray;
-		colliderComponent.aabb = tinyCubeVertexArrayAABB;
+		// colliderComponent.aabb = tinyCubeVertexArrayAABB;
 		renderableMesh.texture = Math::randf() > 0.5f ? &texture : &bricks2Texture;
 		
 		float vf = -4.0f;
@@ -168,26 +177,57 @@ int Game::loadAndRunScene(RenderDevice& device)
 //			megaCubeComp.texIndex = Math::randf() > 0.5f ? 0 : 1;
 //		}
 		//ecs.makeEntity(megaCubeComp);
-		ecs.makeEntity(transformComponent, renderableMesh, motionComponent, colliderComponent, CollisionTypeComponent{CollisionType::STATIC});
+		handle1 = ecs.makeEntity(transformComponent, renderableMesh);
+		ecs.addComponent<MotionComponent>(handle1);
 	}
 	
-	// Create the systems
-	MovementControlSystem movementControlSystem;
-	MegaCubeMotionSystem  megaCubeMotionSystem;
-	Texture*              textures[] = { &texture, &bricks2Texture };
-	MegaCubeRenderer      megaCubeRenderer(*gameRenderContext, tinyCubeVertexArray, textures, std::size(textures));
-	MotionSystem          motionSystem;
-	RenderableMeshSystem  renderableMeshSystem(*gameRenderContext);
+	transformComponent.transform.setTranslation(Vector3f(Math::randf()*2.0f-1.0f, Math::randf()*2.0f-1.0f, 5.0f));
+	// renderableMesh.vertexArray = &vertexArray;
+	// renderableMesh.texture = &texture;
+	handle2 = ecs.makeEntity(renderableMesh, transformComponent, movementControl);
+	ecs.addComponent<MotionComponent>(handle2);
+	// ecs.addComponent<MovementControlComponent>(handle);
 
+	// Changing pawn
+	actionInputComponent.inputs.emplace_back(ActionInput{&changePawnInput, [&ecs = this->ecs, handle1, handle2] ()
+	{
+		std::cout << "Changing pawn \n";
+		if(ecs.hasComponent<MovementControlComponent>(handle1))
+		{
+			MovementControlComponent* movementControlComponent = ecs.getComponent<MovementControlComponent>(handle1);
+			ecs.addComponent(handle2, movementControlComponent);
+			ecs.removeComponent<MovementControlComponent>(handle1);
+		}
+		else if(ecs.hasComponent<MovementControlComponent>(handle2))
+		{
+			MovementControlComponent* movementControlComponent = ecs.getComponent<MovementControlComponent>(handle2);
+			ecs.addComponent(handle1, movementControlComponent);
+			ecs.removeComponent<MovementControlComponent>(handle2);
+		}
+	}
+	});
+
+	ecs.addComponent(handle2, &actionInputComponent);
+	
+	// Create the systems
+	MovementControlSystem movementControlSystem{ecs};
+	// MegaCubeMotionSystem  megaCubeMotionSystem;
+	Texture*              textures[] = { &texture, &bricks2Texture };
+	// MegaCubeRenderer      megaCubeRenderer(*gameRenderContext, tinyCubeVertexArray, textures, std::size(textures));
+	MotionSystem          motionSystem{ecs};
+	RenderableMeshSystem  renderableMeshSystem(ecs, *gameRenderContext);
+	ActionInputSystem     actionInputSystem(ecs);
+
+	inputSystems.addSystem(actionInputSystem);
 	mainSystems.addSystem(movementControlSystem);
 	mainSystems.addSystem(motionSystem);
-	mainSystems.addSystem(megaCubeMotionSystem);
+	// mainSystems.addSystem(megaCubeMotionSystem);
 	renderingPipeline.addSystem(renderableMeshSystem);
-	renderingPipeline.addSystem(megaCubeRenderer);
+	// renderingPipeline.addSystem(megaCubeRenderer);
 
 	// Create interactions
-	OverlapInteraction testInteraction;
-	interactionWorld.addInteraction(&testInteraction);
+	// OverlapInteraction testInteraction;
+	// interactionWorld.addInteraction(&testInteraction);
 
 	gameLoop();
 	return 0;

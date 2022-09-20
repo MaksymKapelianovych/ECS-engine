@@ -5,6 +5,21 @@
 template <typename T>
 using Array = std::vector<T>;
 
+template <class E, class CharT> 
+std::basic_ostream<CharT> & operator<<(std::basic_ostream<CharT> &os, const std::vector<E> &v)
+{
+    os << '('; 
+    auto iter = v.begin(); 
+    auto end  = v.end(); 
+    if (iter != end) { 
+        os << *iter; 
+        while (++iter != end) { 
+            os << ',' << *iter; 
+        } 
+    } 
+    return os << ')';
+}
+
 namespace utils
 {
     template<typename ContainerType>

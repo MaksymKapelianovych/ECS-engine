@@ -2,6 +2,8 @@
 
 #include "ecsComponent.hpp"
 
+class ECS;
+
 class BaseECSSystem
 {
 public:
@@ -9,7 +11,7 @@ public:
 	{
 		FLAG_OPTIONAL = 1,
 	};
-	BaseECSSystem() = default;
+	BaseECSSystem(ECS& ecsIn) : ecs(ecsIn){};
 	virtual ~BaseECSSystem() = default;
 	virtual void updateComponents(float delta, BaseECSComponent** components) = 0;
 	const Array<uint32_t>& getComponentTypes()
@@ -27,6 +29,8 @@ protected:
 		componentTypes.push_back(componentType);
 		componentFlags.push_back(componentFlag);
 	}
+
+	ECS& ecs;
 private:
 	Array<uint32_t> componentTypes;
 	Array<uint32_t> componentFlags;

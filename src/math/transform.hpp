@@ -52,6 +52,8 @@ public:
 	FORCEINLINE void setTranslation(const Vector3f& translation);
 	FORCEINLINE void setRotation(const Quaternion& rotation);
 	FORCEINLINE void setScale(const Vector3f& scale);
+
+	FORCEINLINE friend std::ostream& operator<<(std::ostream& os, const Transform& v);
 private:
 	Vector3f translation;
 	Quaternion rotation;
@@ -172,5 +174,17 @@ FORCEINLINE void Transform::setRotation(const Quaternion& val)
 FORCEINLINE void Transform::setScale(const Vector3f& val)
 {
 	scale = val;
+}
+
+FORCEINLINE std::ostream& operator<<(std::ostream& os, const Transform& value)
+{
+	os << "{";
+	os << value.getTranslation();
+	os << ", ";
+	os << value.getRotation().toVector();
+	os << ", ";
+	os << value.getScale();
+	os << "}";
+	return os;
 }
 

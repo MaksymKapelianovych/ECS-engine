@@ -1,15 +1,41 @@
 #include "ecsComponent.hpp"
 
-Array<std::tuple<ECSComponentCreateFunction, ECSComponentFreeFunction, size_t> >* BaseECSComponent::componentTypes;
+ComponentTypesArray* BaseECSComponent::componentTypes;
+
+#ifdef DEBUG
+Array<String>* BaseECSComponent::componentNames;
+
+uint32_t BaseECSComponent::registerComponentType(ECSComponentCreateFunction createfn,
+			ECSComponentFreeFunction freefn, size_t size, String name, ECSComponentPrintFunction printfn)
+{
+	if(componentTypes == nullptr) {
+		componentTypes = new ComponentTypesArray();
+	}
+	if(componentNames == nullptr) {
+		componentNames = new Array<String>();
+	}
+	
+	const uint32_t componentID = componentTypes->size();
+	componentTypes->emplace_back(createfn, freefn, size, printfn);
+	componentNames->push_back(name);
+	return componentID;
+}
+
+#else
 
 uint32_t BaseECSComponent::registerComponentType(ECSComponentCreateFunction createfn,
 			ECSComponentFreeFunction freefn, size_t size)
 {
 	if(componentTypes == nullptr) {
-		componentTypes = new Array<std::tuple<ECSComponentCreateFunction, ECSComponentFreeFunction, size_t> >();
+		componentTypes = new ComponentTypesArray();
 	}
+	if(componentNames == nullptr) {
+		componentNames = new Array<String>();
+	}
+	
 	uint32_t componentID = componentTypes->size();
-	componentTypes->push_back(std::tuple<ECSComponentCreateFunction, ECSComponentFreeFunction, size_t>(
-				createfn, freefn, size));
+	componentTypes->emplace_back(createfn, freefn, size));
 	return componentID;
 }
+
+#endif

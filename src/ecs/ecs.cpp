@@ -1,7 +1,11 @@
 #include "ecs.hpp"
 
 #include <algorithm>
+#include <iostream>
 
+#include "log_utils.h"
+#include "motion.hpp"
+#include "string.hpp"
 #include "core/memory.hpp"
 #include "math/math.hpp"
 
@@ -224,6 +228,34 @@ void ECS::updateSystems(ECSSystemList& systems, float delta)
 		}
 	}
 }
+
+
+#ifdef DEBUG
+void ECS::debugPrintComponents() const
+{
+	for(auto& component : components)
+	{
+		fprintf(stderr, "\n \tComponent id: %d, name: %s \n", component.first,
+			BaseECSComponent::getComponentName(component.first).c_str());
+		uint32_t typeSize = BaseECSComponent::getTypeSize(component.first);
+		BaseECSComponent::getTypePrintFunction(component.first)(component.second.data(), component.second.size() / typeSize);
+	}
+}
+
+void ECS::debugPrintEntities() const
+{
+	DEBUG_LOG("ECS", LOG_INFO, "Printing entities info");
+	for(auto& entity : entities)
+	{
+		fprintf(stderr, "\n Entity id: %d \n", entity->first);
+		for(auto& component : entity->second)
+		{
+			fprintf(stderr, "Component type id: %d, component name: %s, index in array: %d \n", component.first,
+				BaseECSComponent::getComponentName(component.first).c_str(), component.second / BaseECSComponent::getTypeSize(component.first));
+		}
+	}
+}
+#endif
 
 uint32_t ECS::findLeastCommonComponent(const Array<uint32_t>& componentTypes, const Array<uint32_t>& componentFlags)
 {

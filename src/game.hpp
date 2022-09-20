@@ -11,9 +11,9 @@ class Game
 {
 public:
 	Game(Application* appIn, Window* windowIn, GameRenderContext* gameRenderContextIn) :
-		app(appIn), window(windowIn), gameRenderContext(gameRenderContextIn), interactionWorld(ecs) {
+		app(appIn), window(windowIn), gameRenderContext(gameRenderContextIn)/*, interactionWorld(ecs)*/ {
 		
-		ecs.addListener(&interactionWorld);	
+		// ecs.addListener(&interactionWorld);	
 	}
 	int loadAndRunScene(RenderDevice& device);
 private:
@@ -23,8 +23,9 @@ private:
 	GameEventHandler eventHandler;
 	ECS ecs;
 	ECSSystemList mainSystems;
+	ECSSystemList inputSystems;
 	ECSSystemList renderingPipeline;
-	InteractionWorld interactionWorld;
+	// InteractionWorld interactionWorld;
 
 	void gameLoop();
 };

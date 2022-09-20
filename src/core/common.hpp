@@ -68,8 +68,10 @@
 
 #ifdef DEBUG
 	#define assertCheck assert
+	#define DEBUG_LOG_ECS 1
 #else
 	#define assertCheck (void)
+	#define DEBUG_LOG_ECS 0
 #endif
 
 #ifdef COMPILER_MSVC
@@ -87,17 +89,56 @@
 	#define CONSTEXPR constexpr
 #endif
 
+#if _MSC_VER >= 1920
+	#define PLATFORM_COMPILER_HAS_IF_CONSTEXPR 1
+#else
+	#define PLATFORM_COMPILER_HAS_IF_CONSTEXPR 0
+#endif
+
 #define NULL_COPY_AND_ASSIGN(T) \
 	T(const T& other) {(void)other;} \
 	void operator=(const T& other) { (void)other; }
 
+#define M_CON(A, B) M_CON_(A, B)
+#define M_CON_(A, B) A##B
+
+#define STATIC_BLOCK \
+	[[maybe_unused]] static const auto M_CON(_static_block,__LINE__) = []()
+
+
+// HASH
+
+// compile time FNV-1a
+constexpr uint32_t Hash32_CT( const char * str, size_t n, uint32_t basis = UINT32_C( 2166136261 ) ) {
+	return n == 0 ? basis : Hash32_CT( str + 1, n - 1, ( basis ^ str[ 0 ] ) * UINT32_C( 16777619 ) );
+}
+
+template< uint32_t id >
+uint32_t constexpr typeid_helper() {
+	return id;
+}
+
+template <typename T>
+uint32_t constexpr type_hash();
+
+#define DECLARE_HASH(Class) \
+	template <> \
+	uint32_t constexpr type_hash<Class>(){ \
+		return typeid_helper< Hash32_CT( #Class, sizeof( #Class ) - 1 ) >(); \
+	}
+
+
 #define LOG_ERROR "Error"
 #define LOG_WARNING "Warning"
+#define LOG_INFO "Info"
 #define LOG_TYPE_RENDERER "Renderer"
 #define LOG_TYPE_IO "IO"
 #define DEBUG_LOG(category, level, message, ...) \
 	fprintf(stderr, "[%s] ", category); \
 	fprintf(stderr, "[%s] (%s:%d): ", level, __FUNCTION__, __LINE__); \
+	fprintf(stderr, message, ##__VA_ARGS__); \
+	fprintf(stderr, "\n")
+#define DEBUG_LOG_LITE(message, ...) \
 	fprintf(stderr, message, ##__VA_ARGS__); \
 	fprintf(stderr, "\n")
 #define DEBUG_LOG_TEMP(message, ...) DEBUG_LOG("TEMP", "TEMP", message, ##__VA_ARGS__)
